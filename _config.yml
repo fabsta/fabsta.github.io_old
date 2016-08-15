@@ -78,7 +78,7 @@ analytics:
 # Site Author
 author:
   name             : "Fabian Schreiber"
-  avatar           : "bio-photo.jpg"
+  avatar           : "profile.png"
   bio              : "Do or not do. There is no try."
   location         : "Munich"
   email            :
@@ -89,12 +89,12 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : fabsta
+  github           : "fabsta"
   google_plus      :
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         : "https://de.linkedin.com/in/fabian-schreiber-14698423"
+  linkedin         : "fabian-schreiber-14698423"
   pinterest        :
   soundcloud       :
   stackoverflow    : # http://stackoverflow.com/users/123456/username
@@ -103,7 +103,7 @@ author:
   twitter          : "twitter.com/fabschreiber"
   vine             :
   weibo            :
-  xing             : "https://www.xing.com/profile/Fabian_Schreiber8"
+  xing             : "Fabian_Schreiber8?sc_o=mxb_p"
   youtube          :
 
 
