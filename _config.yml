@@ -7,10 +7,10 @@
 
 # Site Settings
 locale                   : "en"
-title                    : "Site Title"
+title                    : "Big Data Science"
 title_separator          : "-"
-name                     : "Your Name"
-description              : "An amazing website."
+name                     : "Fabian Schreiber"
+description              : "Do or do not. There is not try."
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -55,7 +55,7 @@ yandex_site_verification :
 
 # Social Sharing
 twitter:
-  username               :
+  username               : fabschreiber
 facebook:
   username               :
   app_id                 :
@@ -72,15 +72,15 @@ social:
 analytics:
   provider               : false # false (default), "google", "google-universal", "custom"
   google:
-    tracking_id          :
+    tracking_id          : "UA-76032712-1"
 
 
 # Site Author
 author:
-  name             : "Your Name"
+  name             : "Fabian Schreiber"
   avatar           : "bio-photo.jpg"
-  bio              : "I am an amazing person."
-  location         : "Somewhere"
+  bio              : "Do or not do. There is no try."
+  location         : "Munich"
   email            :
   uri              :
   bitbucket        :
@@ -89,21 +89,21 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           :
+  github           : fabsta
   google_plus      :
   keybase          :
   instagram        :
   lastfm           :
-  linkedin         :
+  linkedin         : "https://de.linkedin.com/in/fabian-schreiber-14698423"
   pinterest        :
   soundcloud       :
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          :
+  twitter          : "twitter.com/fabschreiber"
   vine             :
   weibo            :
-  xing             :
+  xing             : "https://www.xing.com/profile/Fabian_Schreiber8"
   youtube          :
 
 
@@ -226,3 +226,18 @@ compress_html:
   clippings: all
   ignore:
     envs: development
+
+
+
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: true
+      #share: true
+      related: true
