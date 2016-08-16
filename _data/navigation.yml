@@ -1,7 +1,7 @@
 # main links links
 main:
-  - title: "Big Data"
+  - title: "Data Science (Q & A)"
     url: /datascience/data-science-questions-and-answers/
 
-  - title: "Data Science"
+  - title: "Big Data Concepts"
     url: /bigdata/big-data-ideas/
