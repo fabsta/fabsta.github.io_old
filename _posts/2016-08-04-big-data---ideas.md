@@ -230,6 +230,44 @@ tags: [BigData]
 
 (<a href="#top">Back to top</a>)<hr>
 
+### Graph databases
+
+#### Titan
+
+##### Architecture
+<img src="https://i.kinja-img.com/gawker-media/image/upload/s--Pe8w2MVb--/c_scale,fl_progressive,q_80,w_800/x5plwhjhgwaahld8or9v.png" width="1000px">
+
+
+```
+<dependency>
+   <groupId>com.thinkaurelius.titan</groupId>
+   <artifactId>titan-core</artifactId>
+   <version>1.0.0</version>
+</dependency>
+<!-- core, all, cassandra, hbase, berkeleyje, es, lucene -->
+```
+
+```
+// who is hercules' grandfather?
+g.V.has('name','hercules').out('father').out('father').name
+```
+
+#### Tinkerpop
+The goal of TinkerPop, as a Graph Computing Framework, is to make it easy for developers to create graph applications by providing APIs and tools that simplify their endeavors.
+
+##### Architecture
+<img src="http://tinkerpop.apache.org/docs/current/images/provider-integration.png" width="600px">
+
+##### Graph landscape
+<img src="http://image.slidesharecdn.com/graphprocessingwithapachetinkerpop-160512003044/95/graph-processing-with-apache-tinkerpop-9-638.jpg?cb=1463410962" width="600px">
+
+
+##### Getting started - Example graph
+<img src="https://academy.datastax.com/sites/default/files/tinkerpop-modern.png" width="600px">
+
+[Gremlin get started](http://tinkerpop.apache.org/docs/current/tutorials/getting-started/)
+
+
 ### Comparisons
 
 #### Cassandra vs HBase vs MongoDB vs Couchbase
@@ -265,6 +303,7 @@ tags: [BigData]
 # Engine
 
 ##Batch
+
 ### Spark
 
 
@@ -414,6 +453,52 @@ further reading: [here](https://www.google.co.uk/url?sa=i&rct=j&q=&esrc=s&source
 (<a href="#top">Back to top</a>)
 <hr>
 
+### Myriad - Yarn and Mesos together
+Deploy Yarn applications using Mesos
+
+<img src="https://dmgpayxepw99m.cloudfront.net/how-it-works-5a9c93e73031b0fc13ef20061f039a69.png" width="1000px">
+
+
+
+## Yarn vs Mesos
+Mesos: Manage data center
+Yarn: Manage hadoop jobs
+
+<img src="http://image.slidesharecdn.com/mesosvs-160511175623/95/mesos-vs-yarn-an-overview-6-638.jpg?cb=1462989584" width="1000px">
+
+<img src="http://image.slidesharecdn.com/mesosvs-160511175623/95/mesos-vs-yarn-an-overview-4-638.jpg?cb=1462989584" width="1000px">
+
+
+
+## Aurora 
+Apache Aurora is a service scheduler that runs on top of Apache Mesos, enabling you to run long-running services, cron jobs, and ad-hoc jobs that take advantage of Apache Mesos’ scalability, fault-tolerance, and resource isolation.
+
+### Components
+<img src="http://aurora.apache.org/documentation/latest/images/components.png" width="1000px">
+
+* __Aurora scheduler__ The scheduler is your primary interface to the work you run in your cluster. You will instruct it to run jobs, and it will manage them in Mesos for you. You will also frequently use the scheduler’s read-only web interface as a heads-up display for what’s running in your cluster.
+
+* __Aurora client__ The client (aurora command) is a command line tool that exposes primitives that you can use to interact with the scheduler. The client operates on
+
+Aurora also provides an admin client (aurora_admin command) that contains commands built for cluster administrators. You can use this tool to do things like manage user quotas and manage graceful maintenance on machines in cluster.
+
+* __Aurora executor__ The executor (a.k.a. Thermos executor) is responsible for carrying out the workloads described in the Aurora DSL (.aurora files). The executor is what actually executes user processes. It will also perform health checking of tasks and register tasks in ZooKeeper for the purposes of dynamic service discovery.
+
+* __Aurora observer__ The observer provides browser-based access to the status of individual tasks executing on worker machines. It gives insight into the processes executing, and facilitates browsing of task sandbox directories.
+
+* __ZooKeeper__ ZooKeeper is a distributed consensus system. In an Aurora cluster it is used for reliable election of the leading Aurora scheduler and Mesos master. It is also used as a vehicle for service discovery, see Service Discovery
+
+* __Mesos master__ The master is responsible for tracking worker machines and performing accounting of their resources. The scheduler interfaces with the master to control the cluster.
+
+* __Mesos agent__ The agent receives work assigned by the scheduler and executes them. It interfaces with Linux isolation systems like cgroups, namespaces and Docker to manage the resource consumption of tasks. When a user task is launched, the agent will launch the executor (in the context of a Linux cgroup or Docker container depending upon the environment), which will in turn fork user processes.
+
+
+### Jobs, tasks, and processes
+
+<img src="http://aurora.apache.org/documentation/latest/images/aurora_hierarchy.png" width="1000px">
+
+
+
 ## Ambari
 
 ### Architecture
@@ -435,9 +520,30 @@ further reading: [here](https://www.google.co.uk/url?sa=i&rct=j&q=&esrc=s&source
 (<a href="#top">Back to top</a>)
 <hr>
 
+## Atlas
+
+### Requirements
+![http://hortonworks.com/wp-content/uploads/2015/04/atlas_1.png](http://hortonworks.com/wp-content/uploads/2015/04/atlas_1.png)
+
+### Architecture
+![http://hortonworks.com/wp-content/uploads/2015/04/atlas_2.png](http://hortonworks.com/wp-content/uploads/2015/04/atlas_2.png)
+
+### Type definitions
+<img src="http://atlas.incubator.apache.org/images/twiki/guide-class-diagram.png" width="1000px">
+
+
+### Deep dive
+![http://image.slidesharecdn.com/tareq-151227094907/95/josa-techtalk-metadata-managementin-big-data-19-638.jpg?cb=1451210220](http://image.slidesharecdn.com/tareq-151227094907/95/josa-techtalk-metadata-managementin-big-data-19-638.jpg?cb=1451210220)
+
+
+## Marmotta
+<img src="http://marmotta.apache.org/images/architecture-big.png" width="1300px">
+
+
+
 
 ## Other
 
 ### JMX architecture
-<img src="https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781491933657/assets/ctdg_1001.png" width="1000px">
+<img src="https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781491933657/assets/ctdg_1001.png" width="600px">
 
