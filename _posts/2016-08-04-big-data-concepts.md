@@ -113,6 +113,16 @@ tags: [BigData]
 
 ## NoSQL
 
+### Concepts
+
+#### Row- vs. column-oriented
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/row_column_oriented.png)
+
+[image source](http://1.bp.blogspot.com/_j6mB7TMmJJY/TK1npAatLqI/AAAAAAAAAd4/TscPInSeUoo/s1600/p1.png)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
 ### HBase
 
 #### Overview 
@@ -143,6 +153,16 @@ tags: [BigData]
 <hr>
 
 #### Schema design
+
+##### Sparse 
+“Sparse” means that for any given row you can have one or more columns, but each row doesn’t need to have all the same columns as other rows like it (as in a relational model)
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hbase_data_model.png)
+
+[image source](http://www.ymc.ch/wp-content/uploads/2014/02/HBase-Data-Model.png)
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 #### Write Path
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hbase_write_path.jpg)
@@ -318,6 +338,8 @@ The goal of TinkerPop, as a Graph Computing Framework, is to make it easy for de
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/tinkerpop_graph_landscape.png)
 [image source](http://image.slidesharecdn.com/graphprocessingwithapachetinkerpop-160512003044/95/graph-processing-with-apache-tinkerpop-9-638.jpg?cb=1463410962)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 
 ##### Getting started - Example graph
@@ -327,6 +349,8 @@ The goal of TinkerPop, as a Graph Computing Framework, is to make it easy for de
 
 [Gremlin get started](http://tinkerpop.apache.org/docs/current/tutorials/getting-started/)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### Comparisons
 
@@ -336,19 +360,32 @@ The goal of TinkerPop, as a Graph Computing Framework, is to make it easy for de
 
 [image source](http://www.datastax.com/wp-content/themes/datastax-2014-08/images/nosql/chart-load-process-v3.jpg)
 
-![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/cassandra_comparison2.png)
-[image source](http://www.datastax.com/wp-content/themes/datastax-2014-08/images/nosql/chart-load-process-v3.jpg)
-
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/cassandra_comparison3.png)
+
 [image source](http://planetcassandra.org/wp-content/uploads/2015/03/Benchmark-Page-6-Insert-Mostly-Workload.png)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 
 ##### Update
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/cassandra_comparison_update.jpg)
 
-<img src="http://jaxenter.com/wp-content/uploads/2014/02/sergey-3.jpg" width="1000px">
+[image source](http://jaxenter.com/wp-content/uploads/2014/02/sergey-3.jpg)
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+##### Cap Continuum
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/cap_continuum.png)
+
+[image source](https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781449399764/httpatomoreillycomsourceoreillyimages715809.png)
+
+In this depiction, relational databases are on the line between Consistency and Availability, which means that they can fail in the event of a network failure (including a cable breaking). This is typically achieved by defining a single master server, which could itself go down, or an array of servers that simply don’t have sufficient mechanisms built in to continue functioning in the case of network partitions.
+
+Graph databases such as Neo4J and the set of databases derived at least in part from the design of Google’s Bigtable database (such as MongoDB, HBase, Hypertable, and Redis) all are focused slightly less on Availability and more on ensuring Consistency and Partition Tolerance.
+
+Finally, the databases derived from Amazon’s Dynamo design include Cassandra, Project Voldemort, CouchDB, and Riak. These are more focused on Availability and Partition-Tolerance.
 
 (<a href="#top">Back to top</a>)
 <hr>
