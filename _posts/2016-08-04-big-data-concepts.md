@@ -285,7 +285,8 @@ An HBase table comprises a set of metadata information and a set of key/value pa
 * Counters
 * HBase co-processors
 
-(<a href="#top">Back to top</a>)<hr>
+(<a href="#top">Back to top</a>)
+<hr>
 
 
 #### Snapshots
@@ -313,8 +314,10 @@ A snapshot is a set of metadata information that allows an admin to get back to 
 ### Phoenix
 Apache Phoenix enables OLTP and operational analytics in Hadoop for low latency applications by combining the best of both worlds:
 
-the power of standard SQL and JDBC APIs with full ACID transaction capabilities and
-the flexibility of late-bound, schema-on-read capabilities from the NoSQL world by leveraging HBase as its backing store
+* The power of standard SQL and JDBC APIs with full ACID transaction capabilities 
+
+* The flexibility of late-bound, schema-on-read capabilities from the NoSQL world by leveraging HBase as its backing store
+
 Apache Phoenix is fully integrated with other Hadoop products such as Spark, Hive, Pig, Flume, and Map Reduce.
 
 #### where it fits in
@@ -327,7 +330,8 @@ Apache Phoenix is fully integrated with other Hadoop products such as Spark, Hiv
 
 [image source](https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781491933657/assets/ctdg_0604.png)
 
-(<a href="#top">Back to top</a>)<hr>
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### Cassandra
 
@@ -546,10 +550,22 @@ Tez LLAP process compared to Tez execution process and MapReduce process
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/nosql_comparison.jpg)
 [image source](http://image.slidesharecdn.com/bigsqlcompetitivesummary2014-aug-20-140820132237-phpapp01/95/big-sql-competitive-summary-vendor-landscape-8-638.jpg?cb=1408971625)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
-###(Impala, Hive, Spark)
+
+### Benchmark: Impala, Hive, Spark
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/nosql_comparison2.jpg)
-![https://integratc.files.wordpress.com/2015/04/which-hadoop-table-4.jpg](https://integratc.files.wordpress.com/2015/04/which-hadoop-table-4.jpg)
+[source](https://integratc.files.wordpress.com/2015/04/which-hadoop-table-4.jpg)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+### Benchmark: Impala, Hive-on-Tez
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/impala_vs_hize_on_tez.png)
+[source](http://hortonworks.com/wp-content/uploads/2015/09/fig2_impala_vs_hive.png)
+
 
 (<a href="#top">Back to top</a>)
 <hr>

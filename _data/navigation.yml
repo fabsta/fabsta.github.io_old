@@ -6,8 +6,8 @@ main:
   - title: "Big Data Concepts"
     url: /bigdata/big-data-concepts/
 
-  - title: "Quick-Start Guide"
-    url: /docs/quick-start-guide/
+  - title: "Pandas cheat sheet"
+    url: /programming/pandas-cheat-sheet/
   
   - title: "About"
     url: /about/
