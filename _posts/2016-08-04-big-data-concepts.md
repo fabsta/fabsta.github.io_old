@@ -1,6 +1,6 @@
 ---
 title: "Big Data Concepts"
-description: "Overview of hadoop tools"
+description: "Overview of Hadoop Tools and Concepts"
 category: BigData
 tags: [BigData]
 ---
@@ -135,7 +135,7 @@ tags: [BigData]
 
 #### Advantages
 * Need of real-time random read/write on a high scale
-* Variable Schema: columns can be added or removed at runtime
+* Variable Schema: columns can be added or removed at runtime (schema-on-read)
 * Many columns of the datasets are sparse
 * Key based retrieval and auto sharding is required
 * Need of consistency more than availability
@@ -197,8 +197,33 @@ tags: [BigData]
 
 [image source](https://www.safaribooksonline.com/library/view/hadoop-essentials/9781784396688/graphics/B03765_05_01.jpg)
 
+![{{base}}/images/bigdata/hbase_architecture_complex.png]({{base}}/images/bigdata/hbase_architecture_complex.png)
+
+[image source](https://bighadoop.files.wordpress.com/2014/05/hbase-architecture.png)
+
+
+
 (<a href="#top">Back to top</a>)
 <hr>
+
+#### Table
+An HBase table comprises a set of metadata information and a set of key/value pairs:
+
+* Table Info: A manifest file that describes the table “settings”, like column families, compression and encoding codecs, bloom filter types, and so on.
+* Regions: The table “partitions” are called regions. Each region is responsible for handling a contiguous set of key/values, and they are defined by a start key and end key.
+* WALs/MemStore: Before writing data on disk, puts are written to the Write Ahead Log (WAL) and then stored in-memory until memory pressure triggers a flush to disk. The WAL provides an easy way to recover puts not flushed to disk on failure.
+* HFiles: At some point all the data is flushed to disk; an HFile is the HBase format that contains the stored key/values. HFiles are immutable but can be deleted on compaction or region deletion.
+
+[source](http://blog.cloudera.com/blog/2013/03/introduction-to-apache-hbase-snapshots/)
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hbase_table.jpg)
+
+[image source](https://www.safaribooksonline.com/library/view/hadoop-essentials/9781784396688/graphics/B03765_05_03.jpg)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 
 #### Regions
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hbase_regions.png)
@@ -213,22 +238,42 @@ tags: [BigData]
 
 [image source](https://www.safaribooksonline.com/library/view/hadoop-essentials/9781784396688/graphics/B03765_05_02.jpg)
 
-(<a href="#top">Back to top</a>)
-<hr>
+![{{base}}/images/bigdata/hbase_table_regionServer.jpg]({{base}}/images/bigdata/hbase_table_regionServer.jpg)
 
-#### Table
-![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hbase_table.jpg)
-
-[image source](https://www.safaribooksonline.com/library/view/hadoop-essentials/9781784396688/graphics/B03765_05_03.jpg)
+[image source](http://image.slidesharecdn.com/larsgeorge-hw2011-adv-hbase-schema-111110131141-phpapp01/95/hadoop-world-2011-advanced-hbase-schema-design-8-728.jpg?cb=1320931550)
 
 (<a href="#top">Back to top</a>)
 <hr>
 
 
-#### Table splitting
+#### Region splitting
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hbase_table_splitting.jpg)
 
 [image source](http://i62.tinypic.com/16h0rdk.jpg)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+#### Region splitting process
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hbase_region_splitting.jpg)
+
+[image source](http://hortonworks.com/wp-content/uploads/2013/02/hbase.jpg)
+
+
+1. RegionServer decides locally to split the region, and prepares the split. As a first step, it creates a znode in zookeeper under /hbase/region-in-transition/region-name in SPLITTING state.
+2. The Master learns about this znode, since it has a watcher for the parent region-in-transition znode.
+3. RegionServer creates a sub-directory named “.splits” under the parent’s region directory in HDFS.
+4. RegionServer closes the parent region, forces a flush of the cache and marks the region as offline in its local data structures. At this point, client requests coming to the parent region will throw NotServingRegionException. The client will retry with some backoff.
+5. RegionServer create the region directories under .splits directory, for daughter regions A and B, and creates necessary data structures. Then it splits the store files, in the sense that it creates two Reference files per store file in the parent region. Those reference files will point to the parent regions files.
+6. RegionServer creates the actual region directory in HDFS, and moves the reference files for each daughter.
+7. RegionServer sends a Put request to the .META. table, and sets the parent as offline in the .META. table and adds information about daughter regions. At this point, there won’t be individual entries in .META. for the daughters. Clients will see the parent region is split if they scan .META., but won’t know about the daughters until they appear in .META.. Also, if this Put to .META. succeeds, the parent will be effectively split. If the RegionServer fails before this RPC succeeds, Master and the next region server opening the region will clean dirty state about the region split. After the .META. update, though, the region split will be rolled-forward by Master.
+8. RegionServer opens daughters in parallel to accept writes.
+9. RegionServer adds the daughters A and B to .META. together with information that it hosts the regions. After this point, clients can discover the new regions, and issue requests to the new region. Clients cache the .META. entries locally, but when they make requests to the region server or .META., their caches will be invalidated, and they will learn about the new regions from .META..
+10. RegionServer updates znode /hbase/region-in-transition/region-name in zookeeper to state SPLIT, so that the master can learn about it. The balancer can freely re-assign the daughter regions to other region servers if it chooses so.
+11. After the split, meta and HDFS will still contain references to the parent region. Those references will be removed when compactions in daughter regions rewrite the data files. Garbage collection tasks in the master periodically checks whether the daughter regions still refer to parents files.  If not, the parent region will be removed.
+
+[source](http://hortonworks.com/blog/apache-hbase-region-splitting-and-merging/)
 
 (<a href="#top">Back to top</a>)
 <hr>
@@ -239,6 +284,48 @@ tags: [BigData]
 * Filters
 * Counters
 * HBase co-processors
+
+(<a href="#top">Back to top</a>)<hr>
+
+
+#### Snapshots
+A snapshot is a set of metadata information that allows an admin to get back to a previous state of the table. A snapshot is not a copy of the table; it’s just a list of file names and doesn’t copy the data. A full snapshot restore means that you get back to the previous “table schema” and you get back your previous data losing any changes made since the snapshot was taken
+
+* Recovery from user/application errors
+* Restore/Recover from a known safe state.
+* View previous snapshots and selectively merge the difference into production.
+* Save a snapshot right before a major application upgrade or change.
+* Auditing and/or reporting on views of data at specific time
+* Capture monthly data for compliance purposes.
+* Run end-of-day/month/quarter reports.
+* Application testing
+* Test schema or application changes on data similar to that in production from a snapshot and then throw it away. For example: take a snapshot, create a new table from the snapshot content (schema plus data), and manipulate the new table by changing the schema, adding and removing rows, and so on. (The original table, the snapshot, and the new table remain mutually independent.)
+* Offloading of work
+* Take a snapshot, export it to another cluster, and run your MapReduce jobs. Since the export snapshot operates at HDFS level, you don’t slow down your main HBase cluster as much as CopyTable does.
+
+[source](http://blog.cloudera.com/blog/2013/03/introduction-to-apache-hbase-snapshots/)
+
+![{{base}}/images/bigdata/hbase_commit_snapshot.png]({{base}}/images/bigdata/hbase_commit_snapshot.png)
+
+[image source](http://blog.cloudera.com/wp-content/uploads/2013/06/matteo2.png)
+
+
+### Phoenix
+Apache Phoenix enables OLTP and operational analytics in Hadoop for low latency applications by combining the best of both worlds:
+
+the power of standard SQL and JDBC APIs with full ACID transaction capabilities and
+the flexibility of late-bound, schema-on-read capabilities from the NoSQL world by leveraging HBase as its backing store
+Apache Phoenix is fully integrated with other Hadoop products such as Spark, Hive, Pig, Flume, and Map Reduce.
+
+#### where it fits in
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/phoenix_fits_in.png)
+
+[image source](https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781491933657/assets/ctdg_0604.png)
+
+#### Architecture
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/phoenix_fits_in.png)
+
+[image source](https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781491933657/assets/ctdg_0604.png)
 
 (<a href="#top">Back to top</a>)<hr>
 
@@ -408,9 +495,10 @@ Finally, the databases derived from Amazon’s Dynamo design include Cassandra, 
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hive_architecture.jpg)
 [image source](http://image.slidesharecdn.com/sparkandshark-120620130508-phpapp01/95/spark-and-shark-22-728.jpg?cb=1340197567)
 
-![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hive_server.png)
-[image source](http://blog.cloudera.com/wp-content/uploads/2013/07/hiveserver1.png)
+![{{base}}/images/]({{base}}/images/bigdata/hive_architecture2.jpg)
+[image source](http://images.slideplayer.com/24/7523812/slides/slide_5.jpg)
 
+![]()
 (<a href="#top">Back to top</a>)
 <hr>
 
@@ -431,8 +519,26 @@ Tez is a framework for purpose-built tools such as Hive and Pig.
 [image source](http://image.slidesharecdn.com/sparkorhadoop-isitaneither-orproposition-slimbaltagi-150313094837-conversion-gate01/95/spark-or-hadoop-is-it-an-eitheror-proposition-by-slim-baltagi-29-638.jpg?cb=1426240274)
 
 
+### Tez vs Spark
+
 [Tez vs Spark](https://www.xplenty.com/blog/2015/01/apache-spark-vs-tez-comparison/)
 [Flink on Tez](https://ci.apache.org/projects/flink/flink-docs-release-0.9/setup/flink_on_tez.html)
+
+### Hive with LLAP (Live Long and Process)
+With 2.1 Hive  introduces LLAP, a daemon layer for sub-second queries. LLAP combines persistent query servers and optimized in-memory caching that allows Hive to launch queries instantly and avoids unnecessary disk I/O. For more information see [http://hortonworks.com/blog/announcing-apache-hive-2-1-25x-faster-queries-much/](http://hortonworks.com/blog/announcing-apache-hive-2-1-25x-faster-queries-much/).
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/tez_llap.png)
+[image source](http://hortonworks.com/wp-content/uploads/2016/07/Hive-2.1-blog-MR-vs-Tez-vs-LLAP.png)
+
+
+### MapReduce vs Tez vs Tez LLAP
+Tez LLAP process compared to Tez execution process and MapReduce process
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/llap_architecture.png)
+[image source](http://hortonworks.com/wp-content/uploads/2016/07/Hive-2.1-blog-LLAP-Architecture.png)
+
+
+
+
 
 ## Comparison 
 
@@ -467,6 +573,21 @@ Tez is a framework for purpose-built tools such as Hive and Pig.
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/spark_components.jpg)
 
 [image source](https://www.safaribooksonline.com/library/view/hadoop-essentials/9781784396688/graphics/3765_07_10.jpg)
+
+#### History server
+The Spark History Server displays information about the history of completed Spark applications. It displays information about:
+
+* A list of scheduler stages and tasks
+* A summary of RDD sizes and memory usage
+* Environmental information.
+* Information about the running executors
+
+[source](http://spark.apache.org/docs/latest/monitoring.html)
+
+Extension to history server: [spree](http://www.hammerlab.org/2015/07/25/spree-58-a-live-updating-web-ui-for-spark/)
+
+![{{base}}/images/bigdata/spree_intro.gif]({{base}}/images/bigdata/spree_intro.gif)
+[image source](http://www.hammerlab.org/images/spree/intro3.gif)
 
 
 #### RDD vs dataframe
@@ -531,6 +652,14 @@ further reading: [here](https://www.google.co.uk/url?sa=i&rct=j&q=&esrc=s&source
 
 
 ### Storm
+
+
+#### History
+
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/storm_history.gif)
+
+[image source](http://hortonworks.com/wp-content/uploads/2016/05/History-of-Apache-Storm_Hortonworks-2016-1024x1001.gif)
 
 #### Physical Architecture
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/storm_physical_architecture.jpg)
@@ -783,19 +912,97 @@ Aurora also provides an admin client (aurora_admin command) that contains comman
 
 [image source](http://image.slidesharecdn.com/tareq-151227094907/95/josa-techtalk-metadata-managementin-big-data-19-638.jpg?cb=1451210220)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Marmotta
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/marmotta.png)
 
 [image source](http://marmotta.apache.org/images/architecture-big.png)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
-## Other
+## Zookeeper
+Apache ZooKeeper is a distributed, fault tolerant, highly available system for managing configuration information, naming, and more (distributed synchronization, anyone?).
 
-### JMX architecture
+ZooKeeper appears like a filesystem to clients, it is a hierarchy of znodes, which are analogous to directories or files, both of which can contain a small amount of data.
+
+ZooKeeper can be used to store Thrift service location information
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+# Other
+
+## JMX architecture
 
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/jmx.png)
 
 [image source](https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781491933657/assets/ctdg_1001.png)
 
+
+## Thrift 
+Thrift provides a great framework for developing and accessing remote services. It allows developers to create services that can be consumed by any application that is written in a language that there are Thrift bindings for (which is...just about every mainstream one, and more).
+
+manages:
+
+* serialization of data to and from a service
+* the protocol that describes a method invocation, response, etc
+* Thrift uses TCP (not sure if UDP is/will be supported) and so a given service is bound to a particular port.
+ 
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Networking stack
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/thrift_networking_stack.png)
+
+[image source](http://3.bp.blogspot.com/-MuIbUycK0eI/Va6a70JxwjI/AAAAAAAABRo/_UGabAOfkNo/s320/thrift.png)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+### Thrift server
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/thrift_server.png)
+
+[image source](http://2.bp.blogspot.com/-gh4wM0lmruQ/Va6qyamHMbI/AAAAAAAABR4/XV9y3L-wgDg/s400/thrift-server.png)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+### Comparison with SOAP and REST
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/rest_soap_thrift.png)
+
+[image source](http://nordicapis.com/microservice-showdown-rest-vs-soap-vs-apache-thrift-and-why-it-matters/)
+
+Analogy sending a letter using REST, SOAP, and Thrift: [http://nordicapis.com/microservice-showdown-rest-vs-soap-vs-apache-thrift-and-why-it-matters/](http://nordicapis.com/microservice-showdown-rest-vs-soap-vs-apache-thrift-and-why-it-matters/).
+
+ZooKeeper can be used to store Thrift service location information and manage its state ([source](https://www.chrismoos.com/2011/05/25/thrift-and-zookeeper/)).
+
+Further reading: [link](http://thatguyfromthisworld.blogspot.de/2015/07/lets-understand-apache-thrift.html)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+## System of record vs system of engagement
+
+### System of record
+“Systems of Record” are the ERP-type systems we rely on to run our business (financials, manufacturing, CRM, HR).  They have to be “ correct” and “integrated” so all data is consistent. And they were traditionally designed for people who have no choice but to use them.
+[source](http://www.forbes.com/sites/joshbersin/2012/08/16/the-move-from-systems-of-record-to-systems-of-engagement/#6a27371f50c4)
+
+### System of engagement
+“Systems of Engagement” are systems which are used directly by employees for “ sticky uses” – like email, collaboration systems, and new social networking and learning systems.  They “engage” employees.
+[source](http://www.forbes.com/sites/joshbersin/2012/08/16/the-move-from-systems-of-record-to-systems-of-engagement/#6a27371f50c4)
+
+![{{base}}/images/bigdata/lambda_architecture.png]({{base}}/images/bigdata/system_of_record.jpg)
+
+[image source](http://image.slidesharecdn.com/palmercmomg102813-131128113447-phpapp02/95/supporting-knowledge-workers-with-adaptive-case-management-8-638.jpg?cb=1385638592)
+
+
+## Schema-on-read vs schema-on-write
+
+## Data governance 
 
