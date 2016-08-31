@@ -25,9 +25,12 @@ from pandas import DataFrame, Series
 (<a href="#top">Back to top</a>)
 <hr>
 
-# Get data into DataFrame
+# Input/Output
 
-## Instantiate an empty DataFrame
+## Loading: Get data into DataFrame
+
+### Empty DataFrame
+Instantiate an empty DataFrame
 
 ```python
 df = DataFrame()
@@ -36,18 +39,27 @@ df = DataFrame()
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Load a DataFrame from a CSV file
+### CSV
+Load a DataFrame from a CSV file
+
 ```python
-df = pd.read_csv('file.csv')# often works
-df = pd.read_csv('file.csv', header=0,
-    index_col=0, quotechar='"',sep=':',
-    na_values = ['na', '-', '.', ''])
+# often works
+df = pd.read_csv('file.csv')
+df = pd.read_csv('file.csv', header=0, index_col=0, quotechar='"',sep=':', na_values = ['na', '-', '.', ''])
+# specifying "." and "NA" as missing values in the Last Name column and "." as missing values in Pre-Test Score column
+df = pd.read_csv('../data/example.csv', na_values={'Last Name': ['.', 'NA'], 'Pre-Test Score': ['.']}) 
+# skipping the top 3 rows
+df = pd.read_csv('../data/example.csv', na_values=sentinels, skiprows=3)
+# interpreting "," in strings around numbers as thousands separators
+df = pd.read_csv('../data/example.csv', thousands=',') 
 ```
 
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Get data from inline CSV text to a DataFrame
+### CSV (Inline)
+Get data from inline CSV text to a DataFrame
+
 ```python
 from io import StringIO
 data = """, Animal, Cuteness, Desirable
@@ -62,7 +74,42 @@ df = pd.read_csv(StringIO(data),
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Load DataFrames from a Microsoft Excel file
+### JSON
+```python
+import json
+json_data = open('data-text.json').read()
+data = json.loads(json_data)
+for item in data:
+    print item
+```
+
+### XML
+```python
+from xml.etree import ElementTree as ET
+tree = ET.parse('../../data/chp3/data-text.xml')
+root = tree.getroot()
+print root
+data = root.find('Data')
+all_data = []
+for observation in data:
+    record = {}
+    for item in observation:
+        lookup_key = item.attrib.keys()[0]
+        if lookup_key == 'Numeric':
+            rec_key = 'NUMERIC'
+            rec_value = item.attrib['Numeric']
+        else:
+            rec_key = item.attrib[lookup_key]
+            rec_value = item.attrib['Code']
+        record[rec_key] = rec_value
+    all_data.append(record)
+print all_data
+```    
+
+
+### Excel
+Load DataFrames from a Microsoft Excel file
+
 ```python
 # Each Excel sheet in a Python dictionary
 workbook = pd.ExcelFile('file.xlsx')
@@ -76,7 +123,9 @@ for sheet_name in workbook.sheet_names:
 <hr>
 
 
-## Load a DataFrame from a MySQL database
+### MySQL
+ Load a DataFrame from a MySQL database
+ 
 ```python
 import pymysql
 from sqlalchemy import create_engine
@@ -89,7 +138,9 @@ df = pd.read_sql_table('table', engine)
 <hr>
 
 
-## Data in Series then combine into a DataFrame
+### Combine DataFrame
+Data in Series then combine into a DataFrame
+
 ```python
 # Example 1 ...
 s1 = Series(range(6))
@@ -105,21 +156,19 @@ df = pd.concat({'A':s3, 'B':s4 }, axis=1)
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Get a DataFrame from a Python dictionary
+### From Dictionary
+Get a DataFrame from a Python dictionary
+
+#### default --- assume data is in columns
 ```python
-# default --- assume data is in columns
 df = DataFrame({
 	'col0' : [1.0, 2.0, 3.0, 4.0],
 	'col1' : [100, 200, 300, 400]
 })
 ```
 
-(<a href="#top">Back to top</a>)
-<hr>
-
-## Get a DataFrame from data in a Python dictionary
+#### use helper method for data in rows
 ```python
-# --- use helper method for data in rows
 df = DataFrame.from_dict({ # data by row
 # rows as python dictionaries
 	'row0' : {'col0':0, 'col1':'A'},
@@ -135,37 +184,43 @@ df = DataFrame.from_dict({ # data by row
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Create play/fake data (useful for testing)
+### Testing
+Create play/fake data (useful for testing)
+
+#### --- simple - default integer indexes
 ```python
-# --- simple - default integer indexes
 df = DataFrame(np.random.rand(50,5))
-# --- with a time-stamp row index:
+```
+
+#### --- with a time-stamp row index:
+```python
 df = DataFrame(np.random.rand(500,5))
 df.index = pd.date_range('1/1/2005',
 periods=len(df), freq='M')
-# --- with alphabetic row and col indexes
-# and a "groupable" variable
+```
+
+#### --- with alphabetic row and col indexes and a "groupable" variable
+```python
 import string
 import random
 r = 52 # note: min r is 1; max r is 52
 c = 5
 df = DataFrame(np.random.randn(r, c),
-columns = ['col'+str(i) for i in
-range(c)],
-index = list((string. ascii_uppercase+
-string.ascii_lowercase)[0:r]))
-df['group'] = list(
-''.join(random.choice('abcde')
-for _ in range(r)) )
+	columns = ['col'+str(i) for i in range(c)],
+	index = list((string. ascii_uppercase+ string.ascii_lowercase)[0:r]))
+	df['group'] = list(''.join(random.choice('abcde')
+	for _ in range(r)) )
 ```
 
 (<a href="#top">Back to top</a>)
 <hr>
 
 
-# Saving as DataFrame
+## Saving as DataFrame
 
-## Saving a DataFrame to a CSV file
+### CSV
+Saving a DataFrame to a CSV file
+
 ```python
 df.to_csv('name.csv', encoding='utf-8')
 ```
@@ -173,7 +228,9 @@ df.to_csv('name.csv', encoding='utf-8')
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Saving DataFrames to an Excel Workbook
+### Excel
+Saving DataFrames to an Excel Workbook
+
 ```python
 from pandas import ExcelWriter
 writer = ExcelWriter('filename.xlsx')
@@ -185,7 +242,9 @@ writer.save()
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Saving a DataFrame to MySQL
+### MySQL
+Saving a DataFrame to MySQL
+
 ```python
 import pymysql
 from sqlalchemy import create_engine
@@ -197,7 +256,9 @@ df.to_sql('TABLE',e, if_exists='replace')
 (<a href="#top">Back to top</a>)
 <hr>
 
-## Saving to Python objects
+### Python object
+Saving to Python objects
+
 ```python
 d = df.to_dict() # to dictionary
 str = df.to_string() # to string
@@ -207,248 +268,28 @@ m = df.as_matrix() # to numpy matrix
 (<a href="#top">Back to top</a>)
 <hr>
 
-# Working with the whole DataFrame
-
-## Peek at the DataFrame contents/structure```python
-df.info() # index & data typesdfh = df.head(i) # get first i rowsdft = df.tail(i) # get last i rowsdfs = df.describe() # summary stats colstop_left_corner_df = df.iloc[:4, :4]```
-
-(<a href="#top">Back to top</a>)
-<hr>
-## DataFrame non-indexing attributes```python
-dfT = df.T # transpose rows and colsl = df.axes # list row and col indexes(r, c) = df.axes # from aboves = df.dtypes # Series column data typesb = df.empty # True for empty DataFramei = df.ndim # number of axes (it is 2)t = df.shape # (row-count, column-count)i = df.size # row-count * column-counta = df.values # get a numpy array for df```(<a href="#top">Back to top</a>)
-<hr>## DataFrame utility methods```python
-df = df.copy() # copy a DataFramedf = df.rank() # rank each col (default)df = df.sort_values(by=col)df = df.sort_values(by=[col1, col2])df = df.sort_index()df = df.astype(dtype) # type conversion```(<a href="#top">Back to top</a>)
-<hr>
-## DataFrame iteration methods```python
-df.iteritems()# (col-index, Series) pairsdf.iterrows() # (row-index, Series) pairs# example ... iterating over columnsfor (name, series) in df.iteritems():	print('Col name: ' + str(name))	print('First value: ' +		str(series.iat[0]) + '\n')
-```
-
-(<a href="#top">Back to top</a>)
-<hr>
-
-## Maths on the whole DataFrame (not a complete list)```python
-df = df.abs() # absolute valuesdf = df.add(o) # add df, Series or values = df.count() # non NA/null valuesdf = df.cummax() # (cols default axis)df = df.cummin() # (cols default axis)df = df.cumsum() # (cols default axis)df = df.diff() # 1st diff (col def axis)df = df.div(o) # div by df, Series, valuedf = df.dot(o) # matrix dot products = df.max() # max of axis (col def)s = df.mean() # mean (col default axis)s = df.median()# median (col default)s = df.min() # min of axis (col def)df = df.mul(o) # mul by df Series vals = df.sum() # sum axis (cols default)df = df.where(df > 0.5, other=np.nan)```
-Note: The methods that return a series default toworking on columns.(<a href="#top">Back to top</a>)
-<hr>
-## DataFrame select/filter rows/cols on label values```python
-df = df.filter(items=['a', 'b']) # by coldf = df.filter(items=[5], axis=0) #by rowdf = df.filter(like='x') # keep x in coldf = df.filter(regex='x') # regex in coldf = df.select(lambda x: not x%5)#5th rows
-```
-(<a href="#top">Back to top</a>)
-<hr>
-
-# Working with Columns
-
-Each DataFrame column is a pandas Series object## Get column index and labels```python
-idx = df.columns # get col indexlabel = df.columns[0] # first col labell = df.columns.tolist() # list col labels```
-(<a href="#top">Back to top</a>)
-<hr>
-## Change column labels```python
-df.rename(columns={'old1':'new1','old2':'new2'}, inplace=True)
-```
-Note: can rename multiple columns at once.(<a href="#top">Back to top</a>)
-<hr>
-## Selecting columns```python
-s = df['colName'] # select col to Seriesdf = df[['colName']] # select col to dfdf = df[['a','b']] # select 2 or moredf = df[['c','a','b']]# change col orders = df[df.columns[0]] # select by numberdf = df[df.columns[[0, 3, 4]] # by numbers = df.pop('c') # get col & drop from df```
-(<a href="#top">Back to top</a>)
-<hr>
-## Selecting columns with Python attributes```python
-s = df.a # same as s = df['a']# cannot create new columns by attributedf.existing_column = df.a / df.bdf['new_column'] = df.a / df.b
-```
-Trap: column names must be valid identifiers.(<a href="#top">Back to top</a>)
-<hr>
-## Adding new columns to a DataFrame```python
-df['new_col'] = range(len(df))df['new_col'] = np.repeat(np.nan,len(df))df['random'] = np.random.rand(len(df))df['index_as_col'] = df.indexdf1[['b','c']] = df2[['e','f']]df3 = df1.append(other=df2)
-```__Trap__: When adding an indexed pandas object as a newcolumn, only items from the new series that have acorresponding index in the DataFrame will be added.The receiving DataFrame is not extended toaccommodate the new series. To merge, see below.
-__Trap__: when adding a python list or numpy array, thecolumn will be added by integer position.(<a href="#top">Back to top</a>)
-<hr>
-## Swap column contents – change column order```python
-df[['B', 'A']] = df[['A', 'B']]```
-(<a href="#top">Back to top</a>)
-<hr>
-## Dropping (deleting) columns (mostly by label)```python
-df = df.drop('col1', axis=1)df.drop('col1', axis=1, inplace=True)df = df.drop(['col1','col2'], axis=1)s = df.pop('col') # drops from framedel df['col'] # even classic python worksdf.drop(df.columns[0], inplace=True)```
-(<a href="#top">Back to top</a>)
-<hr>
-## Vectorised arithmetic on columns```python
-df['proportion']=df['count']/df['total']df['percent'] = df['proportion'] * 100.0```(<a href="#top">Back to top</a>)
-<hr>
-## Apply numpy mathematical functions to columns```python
-df['log_data'] = np.log(df['col1'])```
-Note: Many more numpy mathematical functions.Hint: Prefer pandas math over numpy where you can.
-
-(<a href="#top">Back to top</a>)
-<hr>
-
-## Set column values set based on criteria```python
-df['b']=df['a'].where(df['a']>0,other=0)df['d']=df['a'].where(df.b!=0,other=df.c)
-```Note: where other can be a Series or a scalar(<a href="#top">Back to top</a>)
-<hr>
-## Data type conversions```python
-st = df['col'].astype(str)# Series dtypea = df['col'].values # numpy arraypl = df['col'].tolist() # python list
-```Note: useful dtypes for Series conversion: int, float, strTrap: index lost in conversion from Series to array or list
-(<a href="#top">Back to top</a>)
-<hr>
-
-## Common column-wide methods/attributes```python
-value = df['col'].dtype # type of datavalue = df['col'].size # col dimensionsvalue = df['col'].count()# non-NA countvalue = df['col'].sum()value = df['col'].prod()value = df['col'].min()value = df['col'].max()value = df['col'].mean() # also median()value = df['col'].cov(df['col2'])s = df['col'].describe()s = df['col'].value_counts()```(<a href="#top">Back to top</a>)
-<hr>
-## Find index label for min/max values in column```python
-label = df['col1'].idxmin()label = df['col1'].idxmax()```
-(<a href="#top">Back to top</a>)
-<hr>
-## Common column element-wise methods```python
-s = df['col'].isnull()s = df['col'].notnull() # not isnull()s = df['col'].astype(float)s = df['col'].abs()s = df['col'].round(decimals=0)s = df['col'].diff(periods=1)s = df['col'].shift(periods=1)s = df['col'].to_datetime()s = df['col'].fillna(0) # replace NaN w 0s = df['col'].cumsum()s = df['col'].cumprod()s = df['col'].pct_change(periods=4)s = df['col'].rolling_sum(periods=4, window=4)```
-Note: also rolling_min(), rolling_max(), and many more.(<a href="#top">Back to top</a>)
-<hr>
-## Append a column of row sums to a DataFrame```python
-df['Total'] = df.sum(axis=1)```
-Note: also means, mins, maxs, etc.(<a href="#top">Back to top</a>)
-<hr>
-## Multiply every column in DataFrame by Series```python
-df = df.mul(s, axis=0) # on matched rows```
-Note: also add, sub, div, etc.(<a href="#top">Back to top</a>)
-<hr>
-## Selecting columns with .loc, .iloc and .ix```python
-df = df.loc[:, 'col1':'col2'] # inclusivedf = df.iloc[:, 0:2] # exclusive```
-(<a href="#top">Back to top</a>)
-<hr>
-## Get the integer position of a column index label```python
-j = df.columns.get_loc('col_name')```
-(<a href="#top">Back to top</a>)
-<hr>
-## Test if column index values are unique/monotonic```python
-if df.columns.is_unique: pass # ...b = df.columns.is_monotonic_increasingb = df.columns.is_monotonic_decreasing
-```
-(<a href="#top">Back to top</a>)
-<hr>
-
-# Working with rows
-
-## Get the row index and labels```python
-idx = df.index # get row indexlabel = df.index[0] # 1st row labellst = df.index.tolist() # get as a list```
-(<a href="#top">Back to top</a>)
-<hr>
-## Change the (row) index```python
-df.index = idx # new ad hoc indexdf = df.set_index('A')# col A new indexdf = df.set_index(['A', 'B'])# MultiIndexdf = df.reset_index() # replace old w new```
-note: old index stored as a col in df```python
-df.index = range(len(df)) # set with listdf = df.reindex(index=range(len(df)))df = df.set_index(keys=['r1','r2','etc'])df.rename(index={'old':'new'},inplace=True)```
-(<a href="#top">Back to top</a>)
-<hr>
-## Adding rows```python
-df = original_df.append(more_rows_in_df)
-```Hint: convert to a DataFrame and then append. BothDataFrames should have same column labels.(<a href="#top">Back to top</a>)
-<hr>
-## Dropping rows (by name)```python
-df = df.drop('row_label')df = df.drop(['row1','row2']) # multi-row```
-(<a href="#top">Back to top</a>)
-<hr>
-## Boolean row selection by values in a column```python
-df = df[df['col2'] >= 0.0]df = df[(df['col3']>=1.0) | (df['col1']<0.0)]df = df[df['col'].isin([1,2,5,7,11])]df = df[~df['col'].isin([1,2,5,7,11])]df = df[df['col'].str.contains('hello')]```Trap: bitwise "or", "and" “not; (ie. | & ~) co-opted to be Boolean operators on a Series of Boolean
-Trap: need parentheses around comparisons.(<a href="#top">Back to top</a>)
-<hr>
-## Selecting rows using isin over multiple columns```python
-## fake up some datadata = {1:[1,2,3], 2:[1,4,9], 3:[1,8,27]}df = DataFrame(data)# multi-column isinlf = {1:[1, 3], 3:[8, 27]} # look forf = df[df[list(lf)].isin(lf).all(axis=1)]Selecting rows using an indexidx = df[df['col'] >= 2].indexprint(df.ix[idx])```
-(<a href="#top">Back to top</a>)
-<hr>
-## Select a slice of rows by integer position```python
-[inclusive-from : exclusive-to [: step]]default start is 0; default end is len(df)df = df[:] # copy DataFramedf = df[0:2] # rows 0 and 1df = df[-1:] # the last rowdf = df[2:3] # row 2 (the third row)df = df[:-1] # all but the last rowdf = df[::2] # every 2nd row (0 2 ..)```
-Trap: a single integer without a colon is a column labelfor integer numbered columns.
-(<a href="#top">Back to top</a>)
-<hr>
-
-
-## Select a slice of rows by label/index```python
-[inclusive-from : inclusive–to [ : step]]df = df['a':'c'] # rows 'a' through 'c'```Trap: doesn't work on integer labelled rows(<a href="#top">Back to top</a>)
-<hr>
-## Append a row of column totals to a DataFrame```python
-# Option 1: use dictionary comprehensionsums = {col: df[col].sum() for col in df}sums_df = DataFrame(sums,index=['Total'])df = df.append(sums_df)# Option 2: All done with pandasdf = df.append(DataFrame(df.sum(),				columns=['Total']).T)```(<a href="#top">Back to top</a>)
-<hr>
-## Iterating over DataFrame rows```python
-for (index, row) in df.iterrows(): # pass
-```Trap: row data type may be coerced.(<a href="#top">Back to top</a>)
-<hr>
-## Sorting DataFrame rows values```python
-df = df.sort(df.columns[0], ascending=False)df.sort(['col1', 'col2'], inplace=True)```(<a href="#top">Back to top</a>)
-<hr>
-## Sort DataFrame by its row index```python
-df.sort_index(inplace=True) # sort by rowdf = df.sort_index(ascending=False)```(<a href="#top">Back to top</a>)
-<hr>
-## Random selection of rows```python
-import random as rk = 20 # pick a numberselection = r.sample(range(len(df)), k)df_sample = df.iloc[selection, :]
-```Note: this sample is not sorted(<a href="#top">Back to top</a>)
-<hr>
-## Drop duplicates in the row index```python
-df['index'] = df.index # 1 create new coldf = df.drop_duplicates(cols='index',take_last=True)# 2 use new coldel df['index'] # 3 del the coldf.sort_index(inplace=True)# 4 tidy up```(<a href="#top">Back to top</a>)
-<hr>
-## Test if two DataFrames have same row index```python
-len(a)==len(b) and all(a.index==b.index)Get the integer position of a row or col index labeli = df.index.get_loc('row_label')```Trap: index.get_loc() returns an integer for a uniquematch. If not a unique match, may return a slice ormask.(<a href="#top">Back to top</a>)
-<hr>
-## Get integer position of rows that meet condition```python
-a = np.where(df['col'] >= 2) #numpy array```(<a href="#top">Back to top</a>)
-<hr>
-## Test if the row index values are unique/monotonic```python
-if df.index.is_unique: pass # ...b = df.index.is_monotonic_increasingb = df.index.is_monotonic_decreasing
-```
-
-(<a href="#top">Back to top</a>)
-<hr>
-
-# Working with cells
-
-Selecting a cell by row and column labels```python
-value = df.at['row', 'col']value = df.loc['row', 'col']value = df['col'].at['row'] # tricky```
-Note: .at[] fastest label based scalar lookup(<a href="#top">Back to top</a>)
-<hr>
-## Setting a cell by row and column labels```python
-df.at['row', 'col'] = valuedf.loc['row', 'col'] = valuedf['col'].at['row'] = value # tricky```
-(<a href="#top">Back to top</a>)
-<hr>
-## Selecting and slicing on labels```python
-df = df.loc['row1':'row3', 'col1':'col3']```
-Note: the "to" on this slice is inclusive.(<a href="#top">Back to top</a>)
-<hr>
-## Setting a cross-section by labels```python
-df.loc['A':'C', 'col1':'col3'] = np.nandf.loc[1:2,'col1':'col2']=np.zeros((2,2))df.loc[1:2,'A':'C']=othr.loc[1:2,'A':'C']```
-Remember: inclusive "to" in the slice(<a href="#top">Back to top</a>)
-<hr>
-## Selecting a cell by integer position```python
-value = df.iat[9, 3] # [row, col]value = df.iloc[0, 0] # [row, col]value = df.iloc[len(df)-1,len(df.columns)-1]```
-(<a href="#top">Back to top</a>)
-<hr>
-## Selecting a range of cells by int position```python
-df = df.iloc[2:4, 2:4] # subset of the dfdf = df.iloc[:5, :5] # top left corners = df.iloc[5, :] # returns row as Seriesdf = df.iloc[5:6, :] # returns row as row
-```Note: exclusive "to" – same as python list slicing.(<a href="#top">Back to top</a>)
-<hr>
-## Setting cell by integer position```python
-df.iloc[0, 0] = value # [row, col]df.iat[7, 8] = value```
-(<a href="#top">Back to top</a>)
-<hr>
-## Setting cell range by integer position```python
-df.iloc[0:3, 0:5] = valuedf.iloc[1:3, 1:4] = np.ones((2, 3))df.iloc[1:3, 1:4] = np.zeros((2, 3))df.iloc[1:3, 1:4] = np.array([[1, 1, 1],[2, 2, 2]])
-```
-Remember: exclusive-to in the slice(<a href="#top">Back to top</a>)
-<hr>
-## .ix for mixed label and integer position indexing```python
-value = df.ix[5, 'col1']df = df.ix[1:5, 'col1':'col3']
-```
-
-(<a href="#top">Back to top</a>)
-<hr>
-
 # Summary: Selecting using Index
-## Using the DataFrame index to select columns```python
-s = df['col_label'] # returns Seriesdf = df[['col_label']]# return DataFramedf = df[['L1', 'L2']] # select with listdf = df[index] # select with indexdf = df[s] #select with Series```
+## Select columns
+Using the DataFrame index to select columns
+```python
+s = df['col_label']  # returns Seriesdf = df[['col_label']] # return DataFramedf = df[['L1', 'L2']] # select with listdf = df[index] # select with indexdf = df[s] #select with Series```
 Note: the difference in return type with the first twoexamples above based on argument type (scalar vs list).(<a href="#top">Back to top</a>)
 <hr>
-## Using the DataFrame index to select rows```python
+## Select rows
+Using the DataFrame index to select rows
+```python
 df = df['from':'inc_to']# label slicedf = df[3:7] # integer slicedf = df[df['col'] > 0.5]# Boolean Seriesdf = df.loc['label'] # single labeldf = df.loc[container] # lab list/Seriesdf = df.loc['from':'to']# inclusive slicedf = df.loc[bs] # Boolean Seriesdf = df.iloc[0] # single integerdf = df.iloc[container] # int list/Seriesdf = df.iloc[0:5] # exclusive slicedf = df.ix[x] # loc then iloc```
 (<a href="#top">Back to top</a>)
 <hr>
-## Using the DataFrame index to select a cross-section```python
+## Select a cross-section
+Using the DataFrame index to select a cross-section
+```python
 # r and c can be scalar, list, slicedf.loc[r, c] # label accessor (row, col)df.iloc[r, c]# integer accessordf.ix[r, c] # label access int fallbackdf[c].iloc[r]# chained – also for .loc```
 (<a href="#top">Back to top</a>)
 <hr>
-## Using the DataFrame index to select a cell```python
+## Select a cell
+Using the DataFrame index to select a cell
+```python
 # r and c must be label or integerdf.at[r, c] # fast scalar label accessordf.iat[r, c] # fast scalar int accessordf[c].iat[r] # chained – also for .at```
 (<a href="#top">Back to top</a>)
 <hr>
@@ -463,6 +304,379 @@ __Note__: the indexing attributes (.loc, .iloc, .ix, .at .iat) canbe used to ge
 ## Some index attributes and methods```python
 # --- some Index attributesb = idx.is_monotonic_decreasingb = idx.is_monotonic_increasingb = idx.has_duplicatesi = idx.nlevels # num of index levels# --- some Index methodsidx = idx.astype(dtype)# change data typeb = idx.equals(o) # check for equalityidx = idx.union(o) # union of two indexesi = idx.nunique() # number unique labelslabel = idx.min() # minimum labellabel = idx.max() # maximum label
 ```
+
+
+# Whole DataFrame
+
+## Content/Structure
+Peek at the DataFrame contents/structure
+```python
+df.info() # index & data typesdfh = df.head(i) # get first i rowsdft = df.tail(i) # get last i rowsdfs = df.describe() # summary stats colstop_left_corner_df = df.iloc[:4, :4]```
+
+(<a href="#top">Back to top</a>)
+<hr>
+## Non-indexing attributes
+DataFrame non-indexing attributes
+```python
+dfT = df.T # transpose rows and colsl = df.axes # list row and col indexes(r, c) = df.axes # from aboves = df.dtypes # Series column data typesb = df.empty # True for empty DataFramei = df.ndim # number of axes (it is 2)t = df.shape # (row-count, column-count)i = df.size # row-count * column-counta = df.values # get a numpy array for df```(<a href="#top">Back to top</a>)
+<hr>## Utilities
+DataFrame utility methods
+```python
+df = df.copy() # copy a DataFramedf = df.rank() # rank each col (default)
+df = df.sort(['sales'], ascending=[False]) df = df.sort_values(by=col)df = df.sort_values(by=[col1, col2])df = df.sort_index()df = df.astype(dtype) # type conversion```(<a href="#top">Back to top</a>)
+<hr>
+## Iterations
+DataFrame iteration methods
+```python
+df.iteritems()# (col-index, Series) pairsdf.iterrows() # (row-index, Series) pairs# example ... iterating over columnsfor (name, series) in df.iteritems():	print('Col name: ' + str(name))	print('First value: ' +		str(series.iat[0]) + '\n')
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+## Maths
+Maths on the whole DataFrame (not a complete list)
+```python
+df = df.abs() # absolute valuesdf = df.add(o) # add df, Series or values = df.count() # non NA/null valuesdf = df.cummax() # (cols default axis)df = df.cummin() # (cols default axis)df = df.cumsum() # (cols default axis)df = df.diff() # 1st diff (col def axis)df = df.div(o) # div by df, Series, valuedf = df.dot(o) # matrix dot products = df.max() # max of axis (col def)s = df.mean() # mean (col default axis)s = df.median()# median (col default)s = df.min() # min of axis (col def)df = df.mul(o) # mul by df Series vals = df.sum() # sum axis (cols default)df = df.where(df > 0.5, other=np.nan)```
+Note: The methods that return a series default toworking on columns.(<a href="#top">Back to top</a>)
+<hr>
+## Select/filter
+DataFrame select/filter rows/cols on label values
+```python
+df = df.filter(items=['a', 'b']) # by coldf = df.filter(items=[5], axis=0) #by rowdf = df.filter(like='x') # keep x in coldf = df.filter(regex='x') # regex in coldf = df.select(lambda x: not x%5)#5th rows
+```
+(<a href="#top">Back to top</a>)
+<hr>
+
+# Columns
+
+Each DataFrame column is a pandas Series object## Info
+### Index and labels
+Get column index and labels
+```python
+idx = df.columns # get col indexlabel = df.columns[0] # first col labell = df.columns.tolist() # list col labels```
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Data type conversions```python
+st = df['col'].astype(str)# Series dtypea = df['col'].values # numpy arraypl = df['col'].tolist() # python list
+```Note: useful dtypes for Series conversion: int, float, strTrap: index lost in conversion from Series to array or list
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Common column-wide methods/attributes```python
+value = df['col'].dtype # type of datavalue = df['col'].size # col dimensionsvalue = df['col'].count()# non-NA countvalue = df['col'].sum()value = df['col'].prod()value = df['col'].min()value = df['col'].max()value = df['col'].mean() # also median()value = df['col'].cov(df['col2'])s = df['col'].describe()s = df['col'].value_counts()```(<a href="#top">Back to top</a>)
+<hr>
+### Find index label for min/max values in column```python
+label = df['col1'].idxmin()label = df['col1'].idxmax()```
+(<a href="#top">Back to top</a>)
+<hr>
+### Common column element-wise methods```python
+s = df['col'].isnull()s = df['col'].notnull() # not isnull()s = df['col'].astype(float)s = df['col'].abs()s = df['col'].round(decimals=0)s = df['col'].diff(periods=1)s = df['col'].shift(periods=1)s = df['col'].to_datetime()s = df['col'].fillna(0) # replace NaN w 0s = df['col'].cumsum()s = df['col'].cumprod()s = df['col'].pct_change(periods=4)s = df['col'].rolling_sum(periods=4, window=4)```
+Note: also rolling_min(), rolling_max(), and many more.(<a href="#top">Back to top</a>)
+<hr>
+
+### Position of a column index label
+Get the integer position of a column index label
+```python
+j = df.columns.get_loc('col_name')```
+(<a href="#top">Back to top</a>)
+<hr>
+### Column index values unique/monotonic
+Test if column index values are unique/monotonic
+```python
+if df.columns.is_unique: pass # ...b = df.columns.is_monotonic_increasingb = df.columns.is_monotonic_decreasing
+```
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+## Selecting
+
+### Columns```python
+s = df['colName'] # select col to Seriesdf = df[['colName']] # select col to dfdf = df[['a','b']] # select 2 or moredf = df[['c','a','b']]# change col orders = df[df.columns[0]] # select by numberdf = df[df.columns[[0, 3, 4]] # by numbers = df.pop('c') # get col & drop from df```
+(<a href="#top">Back to top</a>)
+<hr>
+### Columns with Python attributes```python
+s = df.a # same as s = df['a']# cannot create new columns by attributedf.existing_column = df.a / df.bdf['new_column'] = df.a / df.b
+```
+Trap: column names must be valid identifiers.(<a href="#top">Back to top</a>)
+<hr>
+
+### Selecting columns with .loc, .iloc and .ix```python
+df = df.loc[:, 'col1':'col2'] # inclusivedf = df.iloc[:, 0:2] # exclusive```
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Conditional selection
+
+```python
+df.query('A > C')
+df.query('A > 0') 
+df.query('A > 0 & A < 1')
+df.query('A > B | A > C')
+df[df['coverage'] > 50] # all rows where coverage is more than 50
+df[(df['deaths'] > 500) | (df['deaths'] < 50)]
+df[(df['score'] > 1) & (df['score'] < 5)]
+df[~(df['regiment'] == 'Dragoons')] # Select all the regiments not named "Dragoons"
+#
+df[df['age'].notnull() & df['sex'].notnull()]  # ignore the missing data points
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Is in
+
+```python
+df[df.name.isin(value_list)]   # value_list = ['Tina', 'Molly', 'Jason']
+df[~df.name.isin(value_list)]
+```
+
+### Partial matching
+
+```python
+df2[df2.E.str.contains("tw|ou")]
+```
+
+### Regex
+
+```python
+df['raw'].str.contains('....-..-..', regex=True)  # regex
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+## Changing
+
+### Rename column labels```python
+df.rename(columns={'old1':'new1','old2':'new2'}, inplace=True)
+```
+Note: can rename multiple columns at once.(<a href="#top">Back to top</a>)
+<hr>
+## Manipulating
+### Adding
+
+#### Column
+Adding new columns to a DataFrame
+```python
+df['new_col'] = range(len(df))df['new_col'] = np.repeat(np.nan,len(df))df['random'] = np.random.rand(len(df))df['index_as_col'] = df.indexdf1[['b','c']] = df2[['e','f']]df3 = df1.append(other=df2)
+```__Trap__: When adding an indexed pandas object as a newcolumn, only items from the new series that have acorresponding index in the DataFrame will be added.The receiving DataFrame is not extended toaccommodate the new series. To merge, see below.
+__Trap__: when adding a python list or numpy array, thecolumn will be added by integer position.(<a href="#top">Back to top</a>)
+<hr>
+
+#### Vectorised arithmetic on columns```python
+df['proportion']=df['count']/df['total']df['percent'] = df['proportion'] * 100.0```(<a href="#top">Back to top</a>)
+<hr>
+
+#### Append a column of row sums to a DataFrame```python
+df['Total'] = df.sum(axis=1)```
+Note: also means, mins, maxs, etc.(<a href="#top">Back to top</a>)
+<hr>
+
+#### Apply numpy mathematical functions to columns```python
+df['log_data'] = np.log(df['col1'])```
+Note: Many more numpy mathematical functions.Hint: Prefer pandas math over numpy where you can.
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+#### Set column values set based on criteria```python
+df['b']=df['a'].where(df['a']>0,other=0)df['d']=df['a'].where(df.b!=0,other=df.c)
+```Note: where other can be a Series or a scalar(<a href="#top">Back to top</a>)
+<hr>
+### Swapping
+Swap column contents – change column order
+```python
+df[['B', 'A']] = df[['A', 'B']]```
+(<a href="#top">Back to top</a>)
+<hr>
+### Dropping
+Dropping (deleting) columns (mostly by label)
+```python
+df = df.drop('col1', axis=1)df.drop('col1', axis=1, inplace=True)df = df.drop(['col1','col2'], axis=1)s = df.pop('col') # drops from framedel df['col'] # even classic python worksdf.drop(df.columns[0], inplace=True)```
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Multiply every column in DataFrame by Series```python
+df = df.mul(s, axis=0) # on matched rows```
+Note: also add, sub, div, etc.(<a href="#top">Back to top</a>)
+<hr>
+
+# Rows
+
+## Info
+
+### Get Position
+Get integer position of rows that meet condition
+```python
+a = np.where(df['col'] >= 2) #numpy array```(<a href="#top">Back to top</a>)
+<hr>
+### DataFrames have same row index
+Test if two DataFrames have same row index
+```python
+len(a)==len(b) and all(a.index==b.index)Get the integer position of a row or col index labeli = df.index.get_loc('row_label')```Trap: index.get_loc() returns an integer for a uniquematch. If not a unique match, may return a slice ormask.(<a href="#top">Back to top</a>)
+<hr>
+
+### Row index values are unique/monotonic
+Test if the row index values are unique/monotonic
+```python
+if df.index.is_unique: pass # ...b = df.index.is_monotonic_increasingb = df.index.is_monotonic_decreasing
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+### Get the row index and labels```python
+idx = df.index # get row indexlabel = df.index[0] # 1st row labellst = df.index.tolist() # get as a list```
+(<a href="#top">Back to top</a>)
+<hr>
+## Change the (row) index```python
+df.index = idx # new ad hoc indexdf = df.set_index('A')# col A new indexdf = df.set_index(['A', 'B'])# MultiIndexdf = df.reset_index() # replace old w new```
+note: old index stored as a col in df```python
+df.index = range(len(df)) # set with listdf = df.reindex(index=range(len(df)))df = df.set_index(keys=['r1','r2','etc'])df.rename(index={'old':'new'},inplace=True)```
+(<a href="#top">Back to top</a>)
+<hr>
+
+## Selecting
+
+### By column values
+Boolean row selection by values in a column
+```python
+df = df[df['col2'] >= 0.0]df = df[(df['col3']>=1.0) | (df['col1']<0.0)]df = df[df['col'].isin([1,2,5,7,11])]df = df[~df['col'].isin([1,2,5,7,11])]df = df[df['col'].str.contains('hello')]```Trap: bitwise "or", "and" “not; (ie. | & ~) co-opted to be Boolean operators on a Series of Boolean
+Trap: need parentheses around comparisons.(<a href="#top">Back to top</a>)
+<hr>
+### Using isin over multiple columns
+Selecting rows using isin over multiple columns
+```python
+## fake up some datadata = {1:[1,2,3], 2:[1,4,9], 3:[1,8,27]}df = DataFrame(data)# multi-column isinlf = {1:[1, 3], 3:[8, 27]} # look forf = df[df[list(lf)].isin(lf).all(axis=1)]Selecting rows using an indexidx = df[df['col'] >= 2].indexprint(df.ix[idx])```
+(<a href="#top">Back to top</a>)
+<hr>
+### Slice of rows by integer position
+Select a slice of rows by integer position
+```python
+[inclusive-from : exclusive-to [: step]]default start is 0; default end is len(df)df = df[:] # copy DataFramedf = df[0:2] # rows 0 and 1df = df[-1:] # the last rowdf = df[2:3] # row 2 (the third row)df = df[:-1] # all but the last rowdf = df[::2] # every 2nd row (0 2 ..)```
+Trap: a single integer without a colon is a column labelfor integer numbered columns.
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+### Slice of rows by label/index
+Select a slice of rows by label/index
+```python
+[inclusive-from : inclusive–to [ : step]]df = df['a':'c'] # rows 'a' through 'c'```Trap: doesn't work on integer labelled rows(<a href="#top">Back to top</a>)
+<hr>
+
+
+## Manipulating
+### Adding rows```python
+df = original_df.append(more_rows_in_df)
+```Hint: convert to a DataFrame and then append. BothDataFrames should have same column labels.(<a href="#top">Back to top</a>)
+<hr>
+
+### Append a row of column totals to a DataFrame```python
+# Option 1: use dictionary comprehensionsums = {col: df[col].sum() for col in df}sums_df = DataFrame(sums,index=['Total'])df = df.append(sums_df)# Option 2: All done with pandasdf = df.append(DataFrame(df.sum(),				columns=['Total']).T)```(<a href="#top">Back to top</a>)
+<hr>
+
+### Dropping rows (by name)```python
+df = df.drop('row_label')df = df.drop(['row1','row2']) # multi-row```
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Drop duplicates in the row index```python
+df['index'] = df.index # 1 create new coldf = df.drop_duplicates(cols='index',take_last=True)# 2 use new coldel df['index'] # 3 del the coldf.sort_index(inplace=True)# 4 tidy up```(<a href="#top">Back to top</a>)
+<hr>
+## Iterating over DataFrame rows```python
+for (index, row) in df.iterrows(): # pass
+```Trap: row data type may be coerced.(<a href="#top">Back to top</a>)
+<hr>
+
+## Sorting### Rows values
+Sorting DataFrame rows values
+```python
+df = df.sort(df.columns[0], ascending=False)df.sort(['col1', 'col2'], inplace=True)```(<a href="#top">Back to top</a>)
+<hr>
+### By row index
+
+Sort DataFrame by its row index```python
+df.sort_index(inplace=True) # sort by rowdf = df.sort_index(ascending=False)```(<a href="#top">Back to top</a>)
+<hr>
+### Random
+Random selection of rows
+```python
+import random as rk = 20 # pick a numberselection = r.sample(range(len(df)), k)df_sample = df.iloc[selection, :]
+```Note: this sample is not sorted(<a href="#top">Back to top</a>)
+<hr>
+
+
+# Cells
+
+## Selecting
+
+### By row and column
+Selecting a cell by row and column labels
+```python
+value = df.at['row', 'col']value = df.loc['row', 'col']value = df['col'].at['row'] # tricky```
+Note: .at[] fastest label based scalar lookup(<a href="#top">Back to top</a>)
+<hr>
+
+### By integer position
+Selecting a cell by integer position
+```python
+value = df.iat[9, 3] # [row, col]value = df.iloc[0, 0] # [row, col]value = df.iloc[len(df)-1,len(df.columns)-1]```
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Slice by labels```python
+df = df.loc['row1':'row3', 'col1':'col3']```
+Note: the "to" on this slice is inclusive.(<a href="#top">Back to top</a>)
+<hr>
+
+
+### Slice by Integer Position
+Selecting a range of cells by int position
+```python
+df = df.iloc[2:4, 2:4] # subset of the dfdf = df.iloc[:5, :5] # top left corners = df.iloc[5, :] # returns row as Seriesdf = df.iloc[5:6, :] # returns row as row
+```Note: exclusive "to" – same as python list slicing.(<a href="#top">Back to top</a>)
+<hr>
+
+### By label and/or Index
+.ix for mixed label and integer position indexing
+```python
+value = df.ix[5, 'col1']df = df.ix[1:5, 'col1':'col3']
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+
+## Manipulating
+
+### Updating
+#### A cell
+Setting a cell by row and column labels
+```python
+df.at['row', 'col'] = valuedf.loc['row', 'col'] = valuedf['col'].at['row'] = value # tricky```
+(<a href="#top">Back to top</a>)
+<hr>
+#### Setting a cross-section by labels```python
+df.loc['A':'C', 'col1':'col3'] = np.nandf.loc[1:2,'col1':'col2']=np.zeros((2,2))df.loc[1:2,'A':'C']=othr.loc[1:2,'A':'C']```
+Remember: inclusive "to" in the slice(<a href="#top">Back to top</a>)
+<hr>
+#### Setting cell by integer position```python
+df.iloc[0, 0] = value # [row, col]df.iat[7, 8] = value```
+(<a href="#top">Back to top</a>)
+<hr>
+#### Setting cell range by integer position```python
+df.iloc[0:3, 0:5] = valuedf.iloc[1:3, 1:4] = np.ones((2, 3))df.iloc[1:3, 1:4] = np.zeros((2, 3))df.iloc[1:3, 1:4] = np.array([[1, 1, 1],[2, 2, 2]])
+```
+Remember: exclusive-to in the slice(<a href="#top">Back to top</a>)
+<hr>
+
 (<a href="#top">Back to top</a>)
 <hr>
 
