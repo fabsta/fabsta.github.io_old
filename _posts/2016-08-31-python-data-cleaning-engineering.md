@@ -22,6 +22,29 @@ tags: [programming]
 <hr>
 ## Summarizing and Computing Descriptive Statistics
 
+### Sum, Describe
+
+### Correlation / Covariance
+```python
+df.corr()
+```
+
+### Unique Values, Value Counts, and Membership
+
+#### Compute value frequencies
+```python
+obj.value_counts()
+```
+
+```python
+c    3
+a    3
+b    2
+d    1
+```
+
+
+
 (<a href="#top">Back to top</a>)
 <hr>
 ## Correlation Matrix Of Values
@@ -82,6 +105,9 @@ df.fillna(0, inplace=True) # np.nan -> 0s = df['col'].fillna(0)          # np.n
 
 ```python
 data_frame.X = data_frame.X.map(lambda x: "%.2f" % round(x, 2)).astype(float)
+or
+format = lambda x: '%.2f' % x
+frame.applymap(format)
 ```
 
 (<a href="#top">Back to top</a>)
@@ -117,8 +143,8 @@ data[np.abs(data) > 3] = np.sign(data) * 3
 
 The ufunc np.sign returns an array of 1 and -1 depending on the sign of the values.
 
-
-
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### String    
 
@@ -219,6 +245,35 @@ df_with_dummy = df[['data1']].join(dummies)
 
 # Data Aggregation and Group Operations
 
+![{{base}}/images/lambda_architecture.png]({{base}}/images/programming/group_aggregation.png)
+[image source](https://www.safaribooksonline.com/library/view/python-for-data/9781449323592/httpatomoreillycomsourceoreillyimages1346942.png)
+
+## Group by  + mean
+```python
+means = df['data1'].groupby([df['key1'], df['key2']]).mean()
+```
+
+```python
+key1  key2
+a     one     0.880536
+      two     0.478943
+b     one    -0.519439
+      two    -0.555730
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+## Iterating over groups
+
+```python
+for name, group in df.groupby('key1'):
+	print name
+	print group
+```
+
+
+## Pivot Tables
 
 
 # Unsorted
@@ -227,7 +282,7 @@ df_with_dummy = df[['data1']].join(dummies)
 
 ```python
  Input
-	guardCorps	corps1	corps2	corps3	corps4	corps5	corps6	corps7	corps8	corps9	corps10	corps11	corps14	corps15
+	guardCorps	corps1	corps2	corps3	corps4``````	corps5	corps6	corps7	corps8	corps9	corps10	corps11	corps14	corps15
  1875	0	0	0	0	0	0	0	1	1	0	0	0	1	0
  1876	2	0	0	0	1	0	0	0	0	0	0	0	1	1
  1877	2	0	0	0	0	0	1	1	0	0	1	0	2	0
@@ -275,7 +330,5 @@ df['preTestScore'].idxmax() # row with max value
 
 (<a href="#top">Back to top</a>)
 <hr>
-
-# DayOfWeek
 
 
