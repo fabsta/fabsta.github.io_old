@@ -497,6 +497,15 @@ df[['B', 'A']] = df[['A', 'B']]```
 Dropping (deleting) columns (mostly by label)
 ```python
 df = df.drop('col1', axis=1)df.drop('col1', axis=1, inplace=True)df = df.drop(['col1','col2'], axis=1)s = df.pop('col') # drops from framedel df['col'] # even classic python worksdf.drop(df.columns[0], inplace=True)```
+#### drop columns with column names where the first three letters of the column names was 'pre'
+
+```python
+# drop columns with column names where the first three letters of the column names was 'pre'
+cols = [c for c in df.columns if c.lower()[:3] != 'pre']
+df=df[cols]
+```
+
+
 (<a href="#top">Back to top</a>)
 <hr>
 
@@ -517,7 +526,7 @@ a = np.where(df['col'] >= 2) #numpy array```(<a href="#top">Back to top</a>)
 ### DataFrames have same row index
 Test if two DataFrames have same row index
 ```python
-len(a)==len(b) and all(a.index==b.index)Get the integer position of a row or col index labeli = df.index.get_loc('row_label')```Trap: index.get_loc() returns an integer for a uniquematch. If not a unique match, may return a slice ormask.(<a href="#top">Back to top</a>)
+len(a)==len(b) and all(a.index==b.index)     # Get the integer position of a row or col index labeli = df.index.get_loc('row_label')```Trap: index.get_loc() returns an integer for a uniquematch. If not a unique match, may return a slice ormask.(<a href="#top">Back to top</a>)
 <hr>
 
 ### Row index values are unique/monotonic
@@ -531,11 +540,11 @@ if df.index.is_unique: pass # ...b = df.index.is_monotonic_increasingb = df.in
 
 
 ### Get the row index and labels```python
-idx = df.index # get row indexlabel = df.index[0] # 1st row labellst = df.index.tolist() # get as a list```
+idx = df.index      # get row indexlabel = df.index[0]    # 1st row labellst = df.index.tolist()     # get as a list```
 (<a href="#top">Back to top</a>)
 <hr>
 ## Change the (row) index```python
-df.index = idx # new ad hoc indexdf = df.set_index('A')# col A new indexdf = df.set_index(['A', 'B'])# MultiIndexdf = df.reset_index() # replace old w new```
+df.index = idx     # new ad hoc indexdf = df.set_index('A')    # col A new indexdf = df.set_index(['A', 'B'])    # MultiIndexdf = df.reset_index()   # replace old w new```
 note: old index stored as a col in df```python
 df.index = range(len(df)) # set with listdf = df.reindex(index=range(len(df)))df = df.set_index(keys=['r1','r2','etc'])df.rename(index={'old':'new'},inplace=True)```
 (<a href="#top">Back to top</a>)
@@ -601,14 +610,20 @@ df = df.sort(df.columns[0], ascending=False)df.sort(['col1', 'col2'], inplace=T
 <hr>
 ### By row index
 
-Sort DataFrame by its row index```python
+Sort DataFrame by its row index
+```python
 df.sort_index(inplace=True) # sort by rowdf = df.sort_index(ascending=False)```(<a href="#top">Back to top</a>)
 <hr>
 ### Random
 Random selection of rows
 ```python
 import random as rk = 20 # pick a numberselection = r.sample(range(len(df)), k)df_sample = df.iloc[selection, :]
-```Note: this sample is not sorted(<a href="#top">Back to top</a>)
+```Note: this sample is not sorted
+Slice off the first k elements of the array returned by permutation, where k is the desired subset size
+```python
+df.take(np.random.permutation(len(df))[:3])
+```
+(<a href="#top">Back to top</a>)
 <hr>
 
 
@@ -829,8 +844,8 @@ s = Series( [8,None,float('nan'),np.nan])#[8, NaN, NaN, NaN]s.isnull() #[False
 df = df.dropna() # drop all rows with NaNdf = df.dropna(axis=1) # same for colsdf=df.dropna(how='all') #drop all NaN rowdf=df.dropna(thresh=2) # drop 2+ NaN in r# only drop row if NaN in a specified coldf = df.dropna(df['col'].notnull())```
 (<a href="#top">Back to top</a>)
 <hr>
-## Recoding missing data```python
-df.fillna(0, inplace=True) # np.nan à 0s = df['col'].fillna(0) # np.nan à 0df = df.replace(r'\s+', np.nan,regex=True) # white space à np.nan```
+## Recoding/Replacing missing data```python
+df.fillna(0, inplace=True) # np.nan -> 0s = df['col'].fillna(0) # np.nan -> 0df = df.replace(r'\s+', np.nan,regex=True) # white space -> np.nan```
 (<a href="#top">Back to top</a>)
 <hr>
 ## Non-finite numbersWith floating point numbers, pandas provides forpositive and negative infinity.
