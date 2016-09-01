@@ -3,7 +3,8 @@ title: "Predictive analytics: overview of use cases"
 description: ""
 category: 
 tags: []
-
+sidebar:
+  nav: "new_side"
 ---
 
 ### Table of contents

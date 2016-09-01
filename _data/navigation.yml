@@ -12,6 +12,24 @@ main:
   - title: "About"
     url: /about/
 
+new_side:
+  - title: Data Science
+    children:
+      - title: "Questions & Answers"
+        url: /datascience/data-science-questions-and-answers/
+      - title: "Pandas cheat sheet (Python)"
+        url: /programming/pandas-cheat-sheet/ 
+      - title: "Machine learning cheat sheet (Python)"
+        url: /programming/python-machine-learning/ 
+      - title: "Plotting cheat sheet (Python)"
+        url: /programming/python-plotting-cheat-sheet/
+
+  - title: Big Data
+    children:
+      - title: "Concepts"
+        url: /bigdata/big-data-concepts/
+ 
+
 docs:
   - title: Getting Started
     children:

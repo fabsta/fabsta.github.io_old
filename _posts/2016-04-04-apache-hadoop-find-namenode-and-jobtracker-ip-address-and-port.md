@@ -3,6 +3,8 @@ title: "Apache Hadoop: Find nameNode and jobTracker IP address and port"
 description: ""
 category: hadoop
 tags: [oozie, namenode,jobtracker]
+sidebar:
+  nav: "new_side"
 ---
 
 

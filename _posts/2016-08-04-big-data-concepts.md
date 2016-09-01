@@ -3,6 +3,8 @@ title: "Big Data Concepts"
 description: "Overview of Hadoop Tools and Concepts"
 category: BigData
 tags: [BigData]
+sidebar:
+  nav: "new_side"
 ---
 
 

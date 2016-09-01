@@ -3,6 +3,8 @@ title: "Pandas Cheat Sheet"
 description: "Pandas Cheat Sheet"
 category: Programming
 tags: [programming]
+sidebar:
+  nav: "new_side"
 ---
 
 

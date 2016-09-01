@@ -3,6 +3,8 @@ title: "Python Machine Learning Cheat Sheet"
 description: "Python Machine Learning Cheat Sheet"
 category: Programming
 tags: [programming]
+sidebar:
+  nav: "new_side"
 ---
 [source](https://www.analyticsvidhya.com/blog/2015/05/data-visualization-python/)
 
@@ -13,6 +15,7 @@ tags: [programming]
 
 
 # Preparation
+
 ## split training data
 ```python
 from sklearn.cross_validation import train_test_split
@@ -116,6 +119,7 @@ from sklearn.metrics import confusion_matrixmax_feature_params = ['auto', 'sqrt
 ```
 
 Look at confusion matrix
+
 ```python
 import pandas as pdconfusion_df = pd.DataFrame(confusion_matrixes)import itertoolsfrom matplotlib import pyplot as pltf, ax = plt.subplots(figsize=(7, 5))confusion_df.plot(kind='bar', ax=ax)ax.legend(loc='best')ax.set_title("Guessed vs Correct (i, j) where i is the guess and j is                 the actual.")ax.grid()ax.set_xticklabels([str((i, j)) for i, j in                       list(itertools.product(range(2), range(2)))]);ax.set_xlabel("Guessed vs Correct")ax.set_ylabel("Correct")
 ```

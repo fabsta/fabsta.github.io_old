@@ -3,6 +3,8 @@ title: "IBM open data platform: Installation (BigInsights v4.102)"
 description: ""
 category: Hadoop
 tags: [Installation, hadoop]
+sidebar:
+  nav: "new_side"
 ---
 
 

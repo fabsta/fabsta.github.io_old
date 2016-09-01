@@ -3,6 +3,8 @@ title: "Oozie   file triggered workflow execution"
 description: "Overview of how to trigger a workflow execution with files in Apache Oozie"
 category: hadoop
 tags: [oozie, workflow]
+sidebar:
+  nav: "new_side"
 ---
 
 # Oozie

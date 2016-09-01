@@ -3,6 +3,8 @@ title: "Data science template"
 description: ""
 category: datascience
 tags: [datascience]
+sidebar:
+  nav: "new_side"
 ---
 
 

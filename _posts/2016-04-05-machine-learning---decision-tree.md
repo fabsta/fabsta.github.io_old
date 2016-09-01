@@ -3,6 +3,8 @@ title: "Machine learning   Decision tree"
 description: ""
 category: 
 tags: []
+sidebar:
+  nav: "new_side"
 ---
 
 

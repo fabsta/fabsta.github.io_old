@@ -3,6 +3,8 @@ title: "Python Data Cleaning Engineering Sheet"
 description: "Python Data Cleaning Engineering Sheet"
 category: Programming
 tags: [programming]
+sidebar:
+  nav: "new_side"
 ---
 
 # Table of contents

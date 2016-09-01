@@ -3,6 +3,8 @@ title: "Kafka   best practice"
 description: "Overview of best practices for Apache Kafka"
 category: hadoop
 tags: [hadoop, kafka, queue]
+sidebar:
+  nav: "new_side"
 ---
 
 

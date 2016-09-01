@@ -3,6 +3,8 @@ title: "Data Science   Questions and Answers"
 description: "List of data science questions and answers"
 category: DataScience
 tags: [DataScience, MachineLearning]
+sidebar:
+  nav: "new_side"
 ---
 
 

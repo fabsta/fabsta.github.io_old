@@ -3,6 +3,8 @@ title: "Python Plotting Cheat Sheet"
 description: "Python plotting Cheat Sheet"
 category: Programming
 tags: [programming]
+sidebar:
+  nav: "new_side"
 ---
 [source](https://www.analyticsvidhya.com/blog/2015/05/data-visualization-python/)
 
