@@ -17,13 +17,13 @@ new_side:
     children:
       - title: "Questions & Answers"
         url: /datascience/data-science-questions-and-answers/
-      - title: "Pandas cheat sheet (Python)"
+      - title: "Pandas"
         url: /programming/pandas-cheat-sheet/ 
-      - title: "Data cleaning & engineering (Python)"
+      - title: "Data cleaning & engineering"
         url: /programming/python-data-cleaning-engineering/
-      - title: "Machine learning cheat sheet (Python)"
+      - title: "Machine learning"
         url: /programming/python-machine-learning/ 
-      - title: "Plotting cheat sheet (Python)"
+      - title: "Plotting"
         url: /programming/python-plotting-cheat-sheet/
       - title: "Use cases"
         url: /datascience/predictive-analytics-overview-of-use-cases/
