@@ -1,8 +1,8 @@
 ---
 title: "Predictive analytics: overview of use cases"
-description: ""
-category: 
-tags: []
+description: "Predictive analytics: overview of use cases"
+category: datascience
+tags: [datascience]
 sidebar:
   nav: "new_side"
 ---
@@ -12,38 +12,6 @@ sidebar:
 * TOC
 {:toc}
 
-
-
-# Telecom 
-
-## Personalized Services
-
-Customer Behavior:
-
-* voice, SMS and data usage patterns
-* video choices
-* customer care history
-* social media activity
-* past purchase patterns
-* website visits, duration, browsing and search patterns
-
-
-Customer Demographics:
-
-* age, address and gender
-* type and number of devices used
-* service usage
-* geographic location
-
-
-## Network Optimization
-
-Costs add up when a network is down, underutilized, overtaxed or nearing maximum capacity.
-
-## Social Media and Sentiment Analysis
-
-
-## Location-Based Initiatives
 
 
 # Use cases
@@ -58,24 +26,37 @@ Spine Chart of Preferences for Mobile Communication Services ([image source](htt
 (<a href="#top">Back to top</a>)
 <hr>
 
-### Marketplace behavior
+### Marketplace behaviour
 A framework for understanding marketplace behavior—the choices of buyers and sellers in a market.<br>
 <img src="{{base}}/images/datascience/use_case_markets_sellers_buyers.jpg" width="600px"> ([image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/01fig02.jpg))
 
 ## Predicting customer choice: Transportation study - predicting train or car
 
+### Example input data
+```python
+cartime,carcost,traintime,traincost,choice
+70,50,64,39,TRAIN
+50,230,60,32,TRAIN
+50,70,58,40,CAR
+60,108,93,62,CAR
+70,60,68,26,TRAIN
+```
+
 ### Visually explore variables
-<img src="{{base}}/images/datascience/use_case_transportation_explore.jpg" width="600px"><br>
+
+<img src="{{base}}/images/datascience/use_case_transportation_explore.jpg" width="300px"><br>
 Scatter Plot Matrix for Explanatory Variables in the Sydney Transportation Study ([image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/02fig01.jpg))
 
-with corresponding correlation heat map<br>
-<img src="{{base}}/images/datascience/use_case_transportation_correlation.jpg" width="600px"><br>
+#### What are the correlations between the different features?
+<img src="{{base}}/images/datascience/use_case_transportation_correlation.jpg" width="300px"><br>
 Correlation Heat Map for Explanatory Variables in the Sydney Transportation Study ([image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/02fig01.jpg))
 
 (<a href="#top">Back to top</a>)
 <hr>
 
 ### Build regression model and look at it
+
+A linear combination of the four explanatory variables is used to predict consumer choice. The resulting logistic regression model is:
 
 <img src="{{base}}/images/datascience/use_case_transportation_regression_model.jpg" width="400px"><br>
 [image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/02tab01.jpg)
@@ -85,18 +66,20 @@ Correlation Heat Map for Explanatory Variables in the Sydney Transportation Stud
 
 ### Predicting probability to take the train/car
 
-<img src="{{base}}/images/datascience/use_case_transportation_predict_car_train.jpg" width="600px"><br>
+<img src="{{base}}/images/datascience/use_case_transportation_predict_car_train.jpg" width="300px"><br>
 [image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/02fig03.jpg)
-
 
 (<a href="#top">Back to top</a>)
 <hr>
 
 ### How much lower do ticket prices need to be so that more people take the train?
-Logistic regression to evalate price change<br>
+Goal: Increase public transportation usage by 10 percent. 
 
-<img src="{{base}}/images/datascience/use_case_transportation_how_lower_price.jpg" width="600px"><br>
+<img src="{{base}}/images/datascience/use_case_transportation_how_lower_price.jpg" width="300px"><br>
 [image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/02fig04.jpg)
+
+Conclusion:
+183 (55 percent) of commuters would take the train if ticket prices were lowered by 5 cents
 
 (<a href="#top">Back to top</a>)
 <hr>
@@ -361,5 +344,40 @@ Association Rules for a Local Farmer ([image source](https://www.safaribooksonli
 <img src="{{base}}/images/datascience/use_case_basket_association_local_farmer_network.jpg" width="600px"><br>
 Association Rules for a Local Farmer: A Network Diagram ([image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/09fig06.jpg)).
 
+
+## Predicting Sales
+
+### Example input data
+
+```python
+sales,competition,population,income
+107919,3,65044,13240
+118866,5,101376,22554
+98579,7,124989,16916
+122015,2,55249,20967
+```
+
+The features mean:
+
+* Sales by store
+* Potential competitors
+* Population in that area
+* Median income of houses <5 minutes of store away.
+
+
+### Explore the variables
+
+#### Pairwise relationship btw variables
+<img src="{{base}}/images/datascience/13fig01.jpg" width="300px"><br>
+Scatter Plot Matrix for Restaurant Sales and Explanatory Variables ([image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/13fig01.jpg)).
+
+#### Correlation heat map
+<img src="{{base}}/images/datascience/13fig02.jpg" width="300px"><br>
+Correlation Heat Map for Restaurant Sales and Explanatory Variables ([image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/13fig02.jpg)).
+
+### Linear regression
+
+<img src="{{base}}/images/datascience/13fig03.jpg" width="300px"><br>
+Fitted Regression Model for Restaurant Sales ([image source](https://www.safaribooksonline.com/library/view/marketing-data-science/9780133887662/graphics/13tab01.jpg)).
 
 

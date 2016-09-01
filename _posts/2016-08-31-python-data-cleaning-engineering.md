@@ -82,6 +82,7 @@ def compute_mean(data_frame, column):
 
 ### replacing data
 ```python
+df.fillna({1: 0.5, 3: -1})
 data.replace([-999, -1000], [np.nan, 0]) # 999 -> np.nan, -1000 -> 0
 df.fillna(0, inplace=True) # np.nan -> 0s = df['col'].fillna(0)          # np.nan -> 0df = df.replace(r'\s+', np.nan,regex=True) # white space -> np.nan```
 
