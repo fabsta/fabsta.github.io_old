@@ -19,6 +19,8 @@ new_side:
         url: /datascience/data-science-questions-and-answers/
       - title: "Pandas cheat sheet (Python)"
         url: /programming/pandas-cheat-sheet/ 
+      - title: "Data cleaning & engineering (Python)"
+        url: /programming/python-data-cleaning-engineering/
       - title: "Machine learning cheat sheet (Python)"
         url: /programming/python-machine-learning/ 
       - title: "Plotting cheat sheet (Python)"
