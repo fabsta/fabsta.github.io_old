@@ -29,7 +29,15 @@ new_side:
       - title: "Concepts"
         url: /bigdata/big-data-concepts/
  
-
+  - title: Best practice guides
+    children:
+      - title: "Kafka"
+        url: /hadoop/kafka-best-practice/
+      - title: "Hbase"
+        url: /hadoop/hbase-best-practice/
+      - title: "Storm"
+        url: /hadoop/storm-best-practice/
+ 
 docs:
   - title: Getting Started
     children:
