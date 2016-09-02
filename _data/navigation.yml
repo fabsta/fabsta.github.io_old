@@ -17,13 +17,11 @@ new_side:
     children:
       - title: "Questions & Answers"
         url: /datascience/data-science-questions-and-answers/
-      - title: "Pandas"
-        url: /programming/pandas-cheat-sheet/ 
-      - title: "Data cleaning & engineering"
+      - title: "Data cleaning & engineering (P)"
         url: /programming/python-data-cleaning-engineering/
-      - title: "Machine learning"
+      - title: "Machine learning (P)"
         url: /programming/python-machine-learning/ 
-      - title: "Plotting"
+      - title: "Plotting (P)"
         url: /programming/python-plotting-cheat-sheet/
       - title: "Use cases"
         url: /datascience/predictive-analytics-overview-of-use-cases/
@@ -32,7 +30,15 @@ new_side:
     children:
       - title: "Concepts"
         url: /bigdata/big-data-concepts/
- 
+
+  - title: Programming
+    children:
+      - title: "R"
+        url:  /programming/R-cheat-sheet/
+      - title: "Pandas (Python)"
+        url: /programming/pandas-cheat-sheet/ 
+
+
   - title: Best practice guides
     children:
       - title: "Kafka"

@@ -41,6 +41,19 @@ lr.coef_
 zip(boston.feature_names, lr.coef_)
 ```
 
+
+```python
+import statsmodels.api as sm  # statistical models (including regression)
+import statsmodels.formula.api as smf  # statistical models (including regression)
+# read in data
+df = pd.read_csv('studenmunds_restaurants.csv')
+# specify regression model
+my_model = str('sales ~ competition + population + income')
+# fit the model to the data
+my_model_fit = smf.ols(my_model, data = df).fit()
+
+```
+
 ## Linear Regression (ridge)
 
 ## Logistic Regression
