@@ -15,13 +15,10 @@ sidebar:
 * TOC
 {:toc}
 
-
 # Preliminaries
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-from pandas import DataFrame, Series
+```R
+library(tidyr)
+library(dplyr)
 ```
 
 (<a href="#top">Back to top</a>)
@@ -34,7 +31,22 @@ from pandas import DataFrame, Series
 ### CSV
 ```R
 train <- read.csv("../train.csv", stringsAsFactors = F, row.names = 1)
+# Column headers are values, not variable names
+pew <- tbl_df(read.csv("pew.csv", stringsAsFactors = FALSE, check.names = FALSE))
 ```
+
+```R
+pew
+#> # A tibble: 18 x 11
+#>                   religion `<$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k`
+#>                      <chr>   <int>     <int>     <int>     <int>     <int>
+#> 1                 Agnostic      27        34        60        81        76
+#> 2                  Atheist      12        27        37        52        35
+#> 3                 Buddhist      27        21        30        34        33
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### As function 
 ```R
@@ -46,6 +58,9 @@ sample.submission <- function(){
 }
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ### Custom headers
 ```R
 raw.train <- function(){
@@ -55,6 +70,35 @@ raw.train <- function(){
                     colClasses=cls)
 }
 ```
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+### Generate Testdata
+```R
+set.seed(10)
+messy <- data.frame(
+  id = 1:4,
+  trt = sample(rep(c('control', 'treatment'), each = 2)),
+  work.T1 = runif(4),
+  home.T1 = runif(4),
+  work.T2 = runif(4),
+  home.T2 = runif(4)
+)
+```
+
+gives
+
+```R
+  id       trt    work.T1   home.T1   work.T2    home.T2
+1  1 treatment 0.08513597 0.6158293 0.1135090 0.05190332
+2  2   control 0.22543662 0.4296715 0.5959253 0.26417767
+3  3 treatment 0.27453052 0.6516557 0.3580500 0.39879073
+4  4   control 0.27230507 0.5677378 0.4288094 0.83613414
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Write
 
@@ -64,12 +108,19 @@ cat("simplifying names...\n")
 print(paste('dept:', d))
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ### File
 ```R
-write.csv(ss, file = submit.path, quote=FALSE, row.names=FALSE)
+write.csv(ss, file = "/directoryname/filename.csv", quote=FALSE, row.names=FALSE)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ## Define paths
+
 ```R
 paths = list(data='../data/',
              submit='../submissions/',
@@ -78,19 +129,30 @@ paths = list(data='../data/',
 paths$data             
 ```
 
-# Inspecting
+(<a href="#top">Back to top</a>)
+<hr>
+
+# Whole DataFrame
 [dplyr tutorial](http://rpubs.com/justmarkham/dplyr-tutorial)
 
+## Content / Structure
 ```R
 head(train[, -c(1, 5)])
 head(mydata, n = 20) # first 20 rows to console
 View(mydata)         # spreadsheet view 
-str(train)
+tail(mydata)     # prints the last few rows
+str(train)             # "str" stands for structure
 class(train)         # gets class
 dim(writers_df) # check dimensions
 names(df)
 sapply(ds,class)
 attributes(df)    # list of values per variable
+rownames(mydata) # view row names (numbers, if you haven't assigned names)
+is.data.frame(mydata)           # TRUE or FALSE
+ncol(mydata)                    # number of columns in data frame
+nrow(mydata)                    # number of rows
+names(mydata)                   # variable names
+rownames(mydata)                # optional row names
 ```
 
 
@@ -99,10 +161,35 @@ library(dplyr)
 glimpse(data)
 ```
 
-## Selecting 
+(<a href="#top">Back to top</a>)
+<hr>
 
-### by index,name
+## Select
+
+### Single or Multiple conditions
+
 ```R
+mydata[mydata$sex == "f" & mydata$size.mm > 25, c("site","id","weight")]
+```
+
+```R
+newdata <- subset(mydata, sex == "f" & size.mm > 25, select = c(site,id,weight))
+```
+
+## SQL
+```R
+library(sqldf)
+newdf <- sqldf("select * from mtcars where carb=1 order by mpg",
+                  row.names=TRUE)
+newdf
+```
+
+# Summary
+
+## by index,name
+```R
+df$site        # the site vector
+df$quadrat     # the quadrat vector
 df[,]               # All Rows and All Columns
 df[1,]              # First row and all columns
 df[1:2,]            # First two rows and all columns
@@ -116,13 +203,118 @@ df[,c(1,3)]         # First and Third Column with All rows
 df[1:4, c("Name", "Surname")]
 ```
 
-## Column
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Summarize data
 
 ```R
-I(df, Name =="Jane")
+dplyr::summarise(iris, avg = mean(Sepal.Length))  # Summarise data into single row of values. dplyr::summarise_each(iris, funs(mean))# Apply summary function to each column.dplyr::count(iris, Species, wt = Sepal.Length) # Count number of rows with each unique value ofvariable (with or without weights).
 ```
 
-### dplyr
+(<a href="#top">Back to top</a>)
+<hr>
+
+## Summary function
+
+```R
+dplyr::first   # First value of a vector.dplyr::last   # Last value of a vector.dplyr::nth    # Nth value of a vector.dplyr::n       # of values in a vector.dplyr::n_distinct   # of distinct values i
+min   #Minimum value in a vector.max  # Maximum value in a vector.mean  # Mean value of a vector.median  # Median value of a vector.var    # Variance of a vector.sd    # Standard deviation of a vector
+```
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+
+# Columns
+
+## Info
+
+## Selecting
+
+### by name
+```R
+mydata$site        # the site vector
+mydata$quadrat     # the quadrat vector
+```
+
+
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+
+## Changing
+
+## Manipulating
+
+### Change column names
+```R
+names(mydata)[1] <- c("quad")   # change 1st variable name to quad
+```
+
+### Add columns
+```R
+dplyr::mutate(iris, sepal = Sepal.Length + Sepal. Width) # Compute and append one or more new columns.dplyr::mutate_each(iris, funs(min_rank))   # Apply window function to each column.dplyr::transmute(iris, sepal = Sepal.Length + Sepal. Width) # Compute one or more new columns. Drop original columns.
+mydata$meanx <- (mydata$x1 + mydata$x2)/2
+```
+
+log-transform
+
+```R
+mydata$logsize <- log(mydata$size.mm)
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+### Window function
+```R
+dplyr::lead # Copy with values shi ed by 1.dplyr::lag   # Copy with values lagged by 1.dplyr::dense_rank # Ranks with no gaps.dplyr::min_rank  # Ranks. Ties get min rank.dplyr::percent_rank # Ranks rescaled to [0, 1].dplyr::row_number  # Ranks. Ties got to first value.dplyr::ntile  # Bin vector into n buckets.dplyr::between  # Are values between a and b?dplyr::cume_dist # Cumulative distribution.dplyr::cumall # Cumulative alldplyr::cumany # Cumulative anydplyr::cummean # Cumulative meancumsum # Cumulative sum 
+cummax # Cumulative max 
+cummin  # Cumulative min 
+cumprod # Cumulative prod 
+pmax  # Element-wise max 
+pmin  # Element-wise min
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+### recoding missing values
+```R
+leadership$age[leadership$age == 99] <- NA
+```
+
+### dropping columns
+```R
+myvars <- names(leadership) %in% c("q3", "q4")
+newdata <- leadership[!myvars]
+```
+
+# Rows
+
+## Info
+
+## Selecting
+
+### Columns
+```R
+dplyr::filter(iris, Sepal.Length > 7)   # Extract rows that meet logical criteria.
+dplyr::sample_frac(iris, 0.5, replace = TRUE)  # Randomly select fraction of rows.
+dplyr::sample_n(iris, 10, replace = TRUE) # Randomly select n rows.
+dplyr::slice(iris, 10:15) # Select rows by position.
+dplyr::top_n(storms, 2, date)   # Select and order top n entries (by group if grouped data).
+```
+
+### slice by data range
+```R
+startdate <- as.Date("2009-01-01")
+enddate   <- as.Date("2009-10-31")
+newdata <- leadership[which(leadership$date >= startdate &
+leadership$date <= enddate),]
+```
+
 ```R
 dplyr::
 select(iris, Sepal.Width, Petal.Length, Species)
@@ -137,81 +329,128 @@ select(iris, Sepal.Length:Petal.Width)  # all columns between Sepal.Length and P
 select(iris, -Species)  # all columns except Species.
 ```
 
-## Row 
-
-```R
-dplyr::filter(iris, Sepal.Length > 7)   # Extract rows that meet logical criteria.
-dplyr::distinct(iris) # Remove duplicate rows.
-dplyr::sample_frac(iris, 0.5, replace = TRUE)  # Randomly select fraction of rows.
-dplyr::sample_n(iris, 10, replace = TRUE) # Randomly select n rows.
-dplyr::slice(iris, 10:15) # Select rows by position.
-dplyr::top_n(storms, 2, date)   # Select and order top n entries (by group if grouped data).
-```
+(<a href="#top">Back to top</a>)
+<hr>
 
 
-### matching column value
+### Conditional selection
 ```R
 df[Gender =="MALE",]  # matching column value
 df$Age.At.Death[3]
 iris$Sepal.Length[1:10]
-```
 
-### multiple conditions
-```R
-subset(df, Age.At.Death <= 40 & Age.As.Writer >= 18)
-# select columns to show
-subset(x = mydat, subset = x1 > 0 & x2 < 0, select = c(x1,x2)) 
-```
-
-### regex (colum)
-```R
-writers_df[grep("4", writers_df$Age.At.Death),]
-```
-
-
-
-### Conditional
-```R
-m[m[, "three"] == 11,] # column by name
-m[m[,3] == 11,]        # by number
-```
-
-### Unique values
-```R
-df.dates <- unique(df$Date)
-```
-
-## Traversal
-
-### exist in columns
-
-```R
 if('Id' %in% names(test)){
+
 }
+
+full_imp[which(is.na(age), arr.ind = T), ] # is.na (select all where age-values are na)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
 
-
-
-## is.na (select all where age-values are na)
+### Regex
 ```R
-full_imp[which(is.na(age), arr.ind = T), ]
+df[grep("4", writers_df$Age.At.Death),]
 ```
 
+## Changing
+
+## Manipulating
+
+### Removing
+```R
+dplyr::distinct(iris) # Remove duplicate rows.
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 
 
+## Changing
+
+### Rename column labels
+```R
+library("dplyr")idata = rename(idata, Country = `Country Name`)
+```
+
+```R
+# The dplyr way (rename two variables)idata = rename(idata,
+	top10 = `Income share held by highest 10% [SI.DST.10TH.10]`, 
+	bot10 = `Income share held by lowest 10% [SI.DST.FRST.10]`)# The base R way (rename five variables)names(idata)[5:9] = c("top10", "bot10", "gini", "b40_cons", "gdp_percap")
+```
+
+### Classes
+
+```R
+idata = readRDS("data/idata-renamed.Rds")sapply(idata, class)#> Country Country Code Year Year Code top10 #> "character" "character" "integer" "character" "character" #> bot10 gini b40_cons gdp_percap#> "character" "character" "character" "character"
+```
+
+# Cells
+
+## Manipulating
+
+### Changing
+```R
+mydata$size[mydata$individual == 15] <- c(20.3)
+```
+
+or
+
+```R
+mydata[3,2] <- c(20.3)
+```
+
+# Joining / Merging
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/datascience/R_rbind_cbind.png)
+[image source](http://cfile7.uf.tistory.com/image/2745533555B5F2C203AC87)
+
+
+## Merging
+```R
+total <- merge(dataframeA, dataframeB, by="ID")
+```
+
+## Variables btw dataframes
+```R
+birds$elevation <- sites$elevation[match(birds$siteno, sites$siteno)]
+```
 
 
 
 # Stats
 
-## 
+##  
+
 ```R
 #number of elements in column
 length(test.dates)
-
 ```
+
+## Analyze a single variable
+
+```R
+mean(mydata$size.mm, na.rm = TRUE)   # na.rm option removes missing values
+```
+
+## Apply the same function to several variables at once
+The two (lapply and sapply) are equivalent but differ in the format of their output
+
+```R
+myresult <- sapply(mydata[,2:5], FUN = mean, na.rm = TRUE)
+mylist <- lapply(mydata[,2:5], FUN = mean, na.rm = TRUE)
+```
+
+## Math
+
+### Quantile
+```R
+y <- quantile(roster$score, c(.8,.6,.4,.2))
+```
+
+##
 
 
 ## frequency table
@@ -245,7 +484,7 @@ lvls    <- sapply(factors, function(x) length(levels(ds[[x]])))
 ignore  <- union(ignore, many)
 ```
 
-## contants | unique values
+## constants | unique values
 ```R
 (constants <- names(which(sapply(ds[vars], function(x) all(x == x[1L])))))
 ```
@@ -311,3 +550,66 @@ writers_df[with(writers_df, order(Age.At.Death, Age.As.Writer)), ]
 desc_sorted_data <- arrange(writers_df, desc(Age.At.Death))
 ```
 
+
+## Benchmarking
+
+```R
+library("microbenchmark")df = data.frame(v = 1:4, name = c(letters[1:4])) 
+microbenchmark(  df[3, 2],  df$name[3],  df[3, 'v'])#> Unit: microseconds#>        expr  min   lq mean median   uq   max neval#>    df[3, 2] 22.8 24.2 27.6   24.8 25.5 201.3   100#>  df$name[3] 16.2 17.6 19.9   18.9 19.7  62.4   100#>  df[3, "v"] 14.8 15.9 17.0   16.5 17.0  30.0   100
+```
+
+
+## Profiling
+```R
+library("profvis") profvis(expr = {  # Stage 1: load packageslibrary("rnoaa") library("ggplot2")  # Stage 2: load and process dataout = readRDS("data/out-ice.Rds")df = dplyr::rbind_all(out, id = "Year")  # Stage 3: visualise output
+  
+ggplot(df, aes(long, lat, group = paste(group, Year))) + geom_path(aes(colour = Year))ggsave("figures/icesheet-test.png")}, interval = 0.01, prof_output = "ice-prof")
+```
+
+## Caching
+
+```R
+# Argument indicates row to removeplot_mpg = function(row_to_remove) { 
+	data(mpg, package="ggplot2")	mpg = mpg[-row_to_remove,] 
+	plot(mpg$cty, mpg$hwy) 
+	lines(lowess(mpg$cty, mpg$hwy), col=2)
+}
+```
+and then a quick benchmark
+```R
+library("memoise")m_plot_mpg = memoise(plot_mpg)microbenchmark(times=10, unit="ms", m_plot_mpg(10), plot_mpg(10)) 
+#> Unit: milliseconds#> expr min lq mean median uq max neval cld 
+#> m_plot_mpg(10) 0.04 4e-02 0.07 8e-02 8e-02 0.1 10 a 
+#> plot_mpg(10) 40.20 1e+02 95.52 1e+02 1e+02 107.1 10 b
+```
+
+# Control structure
+
+## If-else
+```R
+if(<condition>) {	## do something} else {}
+```
+
+```R
+if (is.character(grade)) grade <- as.factor(grade)
+if (!is.factor(grade)) grade <- as.factor(grade) else print("Grade already
+    is a factor")
+ ```
+
+```R
+ifelse(score > 0.5, print("Passed"), print("Failed"))
+outcome <- ifelse (score > 0.5, "Passed", "Failed")
+```
+
+```R
+if(<condition1>) {## do something} else if(<condition2>) {## do something different} else {## do something different}
+```
+
+## Loop
+
+### through subset of data
+```R
+for(i in c(2,6,10:15)){
+  print( sd(mydata[,i], na.rm=TRUE) )
+  }
+```
