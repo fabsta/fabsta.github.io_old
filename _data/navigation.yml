@@ -6,6 +6,9 @@ main:
   - title: "Big Data Concepts"
     url: /bigdata/big-data-concepts/
 
+  - title: "Python cheat sheet"
+    url: /programming/python-cheat-sheet/
+  
   - title: "Pandas cheat sheet"
     url: /programming/pandas-cheat-sheet/
   
@@ -37,6 +40,8 @@ new_side:
     children:
       - title: "R"
         url:  /programming/R-cheat-sheet/
+      - title: "Python"
+        url: /programming/python-cheat-sheet/ 
       - title: "Pandas (Python)"
         url: /programming/pandas-cheat-sheet/ 
 
