@@ -46,6 +46,17 @@ pew
 (<a href="#top">Back to top</a>)
 <hr>
 
+### JSON
+```R
+library("rjson")
+json_data <- fromJSON(file=json_file)
+# or
+library(jsonlite)
+winners <- fromJSON("winners.json", flatten=TRUE)
+
+```
+
+
 ### As function 
 ```R
 ss <- sample.submission()
