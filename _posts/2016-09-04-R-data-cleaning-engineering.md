@@ -282,6 +282,13 @@ R stores dates internally, they’re represented as the number of days since Jan
 weekdays(as.Date('16-08-2012','%d-%m-%Y'))
 ```
 
+##### day in week to 'workweek' 'weekend'
+```R
+data$day = factor(NA,levels=c('workweek','weekend'))
+data$day[day >= 0 & day < 5] <- 'workweek'
+data$day[day >= 5] <- 'weekend'
+```
+
 ##### date difference
 ```
 today <- Sys.Date()

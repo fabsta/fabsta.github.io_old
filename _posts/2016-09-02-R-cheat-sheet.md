@@ -8,8 +8,6 @@ sidebar:
 ---
 
 
-[this cheat sheet is based on the fantastic work by @Mark_Graph]. 
-
 # Table of contents
 
 * TOC
