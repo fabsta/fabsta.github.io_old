@@ -22,7 +22,46 @@ sidebar:
 
 (<a href="#top">Back to top</a>)
 <hr>
+
+## Exploration
+
+### Get examples for each column
+```R
+str(df)
+```
+
+### Distribution of column
+```R
+summary(df$glob_IsWon)
+# or
+table(df$glob_IsWon)
+False  True 
+  810  1027 
+```
+
+### Charts
+
+#### Pie 
+```R
+pie(table(df$glob_IsWon))
+```
+
+#### Histogram
+```R
+hist(df$StageIdList)
+```
+#### Scatterplot
+```R
+plot(iris$Sepal.Length, iris$Sepal.Width)
+```
+
+
 ## Summarizing and Computing Descriptive Statistics
+
+### Unique values 
+```R
+unique(df['glob_IsWon'])
+```
 
 ### Sum, Describe
 
@@ -169,8 +208,25 @@ outcome <- ifelse (score > 0.5, "Passed", "Failed")
 (<a href="#top">Back to top</a>)
 <hr>    
 
-### Numbers
+### Correct format
 
+```R
+is.numeric(df$target)
+is.factor(df$target)
+is.character(df$target)
+```
+
+
+### Boolean
+
+#### Convert to number
+```R
+# Convert all to numeric
+cols <- sapply(dat, is.logical)
+dat[,cols] <- lapply(dat[,cols], as.numeric)
+```
+
+### Numbers
 
 
 ### String    
@@ -267,11 +323,17 @@ extract_numeric(week)
 as.Date(date.entered)
 ```
 
+#### to factor
+[explained](http://www.ats.ucla.edu/stat/r/modules/factor_variables.htm)
+```R
+df$target <- factor(df$target2, labels = c("won", "lost"))
+```
+
 #### Dates 
 
 ```R
 mydates <- as.Date(c("2007-06-22", "2004-02-13"))
-
+#
 strDates <- c("01/05/1965", "08/16/1975")
 dates <- as.Date(strDates, "%m/%d/%Y")
 ```
@@ -347,6 +409,15 @@ newdata <- transform(mydata, myvar = scale(myvar)*10+50)
 
 ## Pivot Tables
 
+
+# Training
+
+## Split training/test data
+```R
+Train <- createDataPartition(GermanCredit$Class, p=0.6, list=FALSE)
+training <- GermanCredit[ Train, ]
+testing <- GermanCredit[ -Train, ]
+```
 
 # Use cases
 
