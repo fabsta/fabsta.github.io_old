@@ -50,6 +50,7 @@ pie(table(df$glob_IsWon))
 ```R
 hist(df$StageIdList)
 ```
+
 #### Scatterplot
 ```R
 plot(iris$Sepal.Length, iris$Sepal.Width)
@@ -131,7 +132,6 @@ full_imp[is.na(full_imp[, age]), age := .(imp_age)]
 Gather the non-variable columns into a two-column key-value pair.
 
 Making wide dataset long.
-
 
 ```R
 #> # A tibble: 18 x 11
@@ -283,6 +283,8 @@ frame
 
 ### Recoding Variables
 
+
+#### Continuous into categories
 ```R
 leadership <- within(leadership,{
                      agecat <- NA
@@ -299,6 +301,8 @@ df$col[]
 ```R
 leadership$age[leadership$age == 99] <- NA
 ```
+
+#### Create pass/fail variable based on set of cutoff scores
 
 #### removing rows with 'na' values using na.omit
 ```R

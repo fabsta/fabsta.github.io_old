@@ -24,8 +24,8 @@ new_side:
         url: /programming/python-data-cleaning-engineering/
       - title: "Data cleaning & engineering (R)"
         url: /programming/R-data-cleaning-engineering/
-      - title: "Machine learning (P)"
-        url: /programming/python-machine-learning/ 
+      - title: "Machine learning (P/R)"
+        url: /programming/machine-learning/ 
       - title: "Plotting (P)"
         url: /programming/python-plotting-cheat-sheet/
       - title: "Use cases"

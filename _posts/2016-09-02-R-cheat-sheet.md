@@ -299,6 +299,8 @@ leadership$age[leadership$age == 99] <- NA
 ```R
 myvars <- names(leadership) %in% c("q3", "q4")
 newdata <- leadership[!myvars]
+# or just selecting the ones to be used
+myvars <- c("q1", "q2", "q3", "q4", "q5")newdata <-leadership[myvars]
 ```
 
 # Rows
@@ -382,6 +384,8 @@ dplyr::distinct(iris) # Remove duplicate rows.
 ### Rename column labels
 ```R
 library("dplyr")idata = rename(idata, Country = `Country Name`)
+# or
+library(reshape)leadership <- rename(leadership,                     c(manager="managerID", date="testDate"))
 ```
 
 ```R
