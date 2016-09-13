@@ -231,9 +231,21 @@ alter 'table1', {NAME => 'col_fam1', IN_MEMORY => 'true'}
 ## Storage
 
 ### Default storage location
+
 ```sh
 /apps/hbase/data/data/default
 ```
 
 (<a href="#top">Back to top</a>)
 <hr>
+
+
+
+# Security
+
+## Kerberos
+
+### Get new ticket / refresh
+```sh
+kinit USER
+```

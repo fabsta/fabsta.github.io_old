@@ -28,6 +28,7 @@ sidebar:
 ### Get examples for each column
 ```R
 str(df)
+t(df)[,1:2]
 ```
 
 ### Distribution of column
@@ -38,6 +39,14 @@ table(df$glob_IsWon)
 False  True 
   810  1027 
 ```
+
+things to look for when using summary
+
+* missing values
+* invalid values
+* outliers 
+* data ranges that are too wide or too narrow.
+
 
 ### Charts
 
@@ -56,6 +65,24 @@ hist(df$StageIdList)
 plot(iris$Sepal.Length, iris$Sepal.Width)
 ```
 
+#### Correlation plot
+```R
+library(corrplot)
+corrplot(cor(X), order = "hclust")
+```
+
+#### Bar chart
+```R
+ggplot(custdata) + geom_bar(aes(x=marital.stat), fill="gray")
+```
+#### Density plot
+```R
+library(scales)
+
+ggplot(df) + geom_density(aes(x=UserInvolvement_RecencyScore)) +
+  scale_x_continuous(labels=dollar)
+
+```
 
 ## Summarizing and Computing Descriptive Statistics
 
@@ -91,6 +118,12 @@ unique(df['glob_IsWon'])
 
 ## Handling Missing Data
 
+### create shadow matrix
+```R
+x <- as.data.frame(abs(is.na(sleep)))
+y <- x[which(sd(x) > 0)]# extracts the variables that have some (but not all) missing values, andcor(y)
+```
+gives you correlations among indicator variables. of missing values.
 
 
 ### using linear regression
@@ -120,6 +153,7 @@ full_imp[is.na(full_imp[, age]), age := .(imp_age)]
 
 # Data Wrangling: Clean, Transform, Merge, Reshape
 [tidy-data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+
 ## Combining and Merging Data Sets
 
 ## Reshaping and Pivoting
@@ -141,7 +175,9 @@ Making wide dataset long.
 #> 2                  Atheist      12        27        37        52        35
 #> 3                 Buddhist      27        21        30        34        33
 ```
+
 Define key-value columns. 
+
 * key: income
 * value: frequency
 * to gather: all expect religion
@@ -163,6 +199,13 @@ range of columns, remove 'na' values
 
 ```R
 gather(week, rank, wk1:wk76, na.rm = TRUE)
+```
+
+### Select only numeric features
+```R
+nums <- sapply(x, is.numeric)
+# Then standard subsetting
+x[ , nums]
 ```
 
 ## Data Transformation
@@ -246,8 +289,6 @@ grep("A", c("b","A","c"), fixed=TRUE)
 ```
 
 
-
-
 #### String to Integer
 ```R
 
@@ -259,7 +300,7 @@ grep("A", c("b","A","c"), fixed=TRUE)
 
 #### String Manipulation: "/" -> 0|1
 
-#### If else on column
+##### If else on column
 ```R
 frame$twohouses <- ifelse(frame$data>=2, 2, 1)
 frame
@@ -276,6 +317,35 @@ frame
 19    2         2
 20    0         1
 21    4         2
+```
+
+(<a href="#top">Back to top</a>)
+<hr>  
+
+##### Grep string -> new column
+```R
+extractTitle <- function(name){
+	name <- as.character(name)
+	if(length(grep(“Miss”, name)) > 0){
+		return (“Miss”)
+	}
+	if(length(grep(“Master”, name)) > 0){
+		return (“Master”)
+	}
+	else {
+		return (“Miss”)
+	}	
+}
+```
+
+and apply it
+
+```R
+titles <- NULL
+for (i in 1:nrow(df)){
+	titles <- c(titles, extractTitle(df[i,”name”]))
+}
+df$title <- as.factor(titles)
 ```
 
 (<a href="#top">Back to top</a>)
@@ -328,7 +398,8 @@ as.Date(date.entered)
 ```
 
 #### to factor
-[explained](http://www.ats.ucla.edu/stat/r/modules/factor_variables.htm)
+explained [here](http://www.ats.ucla.edu/stat/r/modules/factor_variables.htm)
+
 ```R
 df$target <- factor(df$target2, labels = c("won", "lost"))
 ```

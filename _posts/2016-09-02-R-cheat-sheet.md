@@ -43,6 +43,11 @@ pew
 #> 3                 Buddhist      27        21        30        34        33
 ```
 
+```R
+# using read.table
+uciCar <- read.table( 'http://www.win-vector.com/dfiles/car.data.csv', sep=',',	header=T)
+```
+
 (<a href="#top">Back to top</a>)
 <hr>
 
@@ -183,6 +188,8 @@ mydata[mydata$sex == "f" & mydata$size.mm > 25, c("site","id","weight")]
 
 ```R
 newdata <- subset(mydata, sex == "f" & size.mm > 25, select = c(site,id,weight))
+# or
+custdata2 <- subset(custdata,   (custdata$age > 0 & custdata$age < 100   & custdata$income > 0))
 ```
 
 ## SQL
@@ -247,7 +254,12 @@ mydata$site        # the site vector
 mydata$quadrat     # the quadrat vector
 ```
 
-
+### only numeric features
+```R
+nums <- sapply(x, is.numeric)
+# Then standard subsetting
+x[ , nums]
+```
 
 (<a href="#top">Back to top</a>)
 <hr>
@@ -295,6 +307,9 @@ pmin  # Element-wise min
 leadership$age[leadership$age == 99] <- NA
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ### dropping columns
 ```R
 myvars <- names(leadership) %in% c("q3", "q4")
@@ -317,6 +332,10 @@ dplyr::sample_n(iris, 10, replace = TRUE) # Randomly select n rows.
 dplyr::slice(iris, 10:15) # Select rows by position.
 dplyr::top_n(storms, 2, date)   # Select and order top n entries (by group if grouped data).
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
 
 ### slice by data range
 ```R
@@ -394,11 +413,19 @@ library(reshape)leadership <- rename(leadership,                     c(manager
 	bot10 = `Income share held by lowest 10% [SI.DST.FRST.10]`)# The base R way (rename five variables)names(idata)[5:9] = c("top10", "bot10", "gini", "b40_cons", "gdp_percap")
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 ### Classes
 
 ```R
 idata = readRDS("data/idata-renamed.Rds")sapply(idata, class)#> Country Country Code Year Year Code top10 #> "character" "character" "integer" "character" "character" #> bot10 gini b40_cons gdp_percap#> "character" "character" "character" "character"
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
 
 # Cells
 
@@ -415,10 +442,32 @@ or
 mydata[3,2] <- c(20.3)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 # Joining / Merging
 
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/datascience/R_rbind_cbind.png)
 [image source](http://cfile7.uf.tistory.com/image/2745533555B5F2C203AC87)
+
+
+```R
+rbind
+sample1 <- data[sample(1:nrow(data), 10, replace=FALSE),]
+sample2 <- data[sample(1:nrow(data), 5, replace=FALSE),]
+newdata <- rbind(sample1, sample2)
+```
+
+```R
+# cbind
+newdata1 <- data[c(1,5:7)]
+newdata2 <- data[c(8:11)]
+newdata <- cbind(newdata1, newdata2)
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 
 ## Merging
@@ -426,27 +475,42 @@ mydata[3,2] <- c(20.3)
 total <- merge(dataframeA, dataframeB, by="ID")
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 ## Variables btw dataframes
 ```R
 birds$elevation <- sites$elevation[match(birds$siteno, sites$siteno)]
 ```
 
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 
 # Stats
 
-##  
 
 ```R
 #number of elements in column
 length(test.dates)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 ## Analyze a single variable
 
 ```R
 mean(mydata$size.mm, na.rm = TRUE)   # na.rm option removes missing values
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
 
 ## Apply the same function to several variables at once
 The two (lapply and sapply) are equivalent but differ in the format of their output
@@ -456,6 +520,10 @@ myresult <- sapply(mydata[,2:5], FUN = mean, na.rm = TRUE)
 mylist <- lapply(mydata[,2:5], FUN = mean, na.rm = TRUE)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 ## Math
 
 ### Quantile
@@ -463,7 +531,10 @@ mylist <- lapply(mydata[,2:5], FUN = mean, na.rm = TRUE)
 y <- quantile(roster$score, c(.8,.6,.4,.2))
 ```
 
-##
+
+(<a href="#top">Back to top</a>)
+<hr>
+
 
 
 ## frequency table
@@ -475,12 +546,18 @@ names <- c(df$Name)
 name_freq <- table(names)/length(names)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 ## missingness & new zero variance
 ```R
 summary(sapply(training, is.na)) # any missing values? nope
 nearZeroVar(training)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 
 ## Variability
@@ -492,25 +569,34 @@ lvls    <- sapply(factors, function(x) length(levels(ds[[x]])))
 (many   <- names(which(lvls > 20)))
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ## character(0)
 ```R
 ignore  <- union(ignore, many)
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## constants | unique values
 ```R
 (constants <- names(which(sapply(ds[vars], function(x) all(x == x[1L])))))
 ```
 
-## [1] "location"
-## or
+(<a href="#top">Back to top</a>)
+<hr>
+
+## location
 ```R
 (ids   <- which(sapply(ds, function(x) length(unique(x))) == nrow(ds)))
 
 ignore <- union(ignore, constants)
 ```
 
-
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Covariance and correlation
 ```R
@@ -533,15 +619,18 @@ mc <- mc[order(-abs(mc$cor)),]
 mc
 # and then add to ignore list
 ignore <- union(ignore, c("temp_3pm", "pressure_9am", "temp_9am"))
-
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## matrix of scatter plots
 ```R
 pairs(iris)
 ```
 
-
+(<a href="#top">Back to top</a>)
+<hr>
 
 # Sorting
 
@@ -553,6 +642,9 @@ writers_df[order(writers_df$Age.As.Writer, decreasing=TRUE),]
 writers_df[order(-writers_df$Age.As.Writer),] # numeric variable
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ## with dplyr
 
 ```R
@@ -563,6 +655,8 @@ writers_df[with(writers_df, order(Age.At.Death, Age.As.Writer)), ]
 desc_sorted_data <- arrange(writers_df, desc(Age.At.Death))
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Benchmarking
 
@@ -571,6 +665,8 @@ library("microbenchmark")df = data.frame(v = 1:4, name = c(letters[1:4]))
 microbenchmark(  df[3, 2],  df$name[3],  df[3, 'v'])#> Unit: microseconds#>        expr  min   lq mean median   uq   max neval#>    df[3, 2] 22.8 24.2 27.6   24.8 25.5 201.3   100#>  df$name[3] 16.2 17.6 19.9   18.9 19.7  62.4   100#>  df[3, "v"] 14.8 15.9 17.0   16.5 17.0  30.0   100
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Profiling
 ```R
@@ -578,6 +674,9 @@ library("profvis") profvis(expr = {  # Stage 1: load packageslibrary("rnoaa") 
   
 ggplot(df, aes(long, lat, group = paste(group, Year))) + geom_path(aes(colour = Year))ggsave("figures/icesheet-test.png")}, interval = 0.01, prof_output = "ice-prof")
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Caching
 
@@ -589,12 +688,16 @@ ggplot(df, aes(long, lat, group = paste(group, Year))) + geom_path(aes(colour = 
 }
 ```
 and then a quick benchmark
+
 ```R
 library("memoise")m_plot_mpg = memoise(plot_mpg)microbenchmark(times=10, unit="ms", m_plot_mpg(10), plot_mpg(10)) 
 #> Unit: milliseconds#> expr min lq mean median uq max neval cld 
 #> m_plot_mpg(10) 0.04 4e-02 0.07 8e-02 8e-02 0.1 10 a 
 #> plot_mpg(10) 40.20 1e+02 95.52 1e+02 1e+02 107.1 10 b
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 # Control structure
 
@@ -612,11 +715,16 @@ if (!is.factor(grade)) grade <- as.factor(grade) else print("Grade already
 ```R
 ifelse(score > 0.5, print("Passed"), print("Failed"))
 outcome <- ifelse (score > 0.5, "Passed", "Failed")
+# M || F
+psub$SEX = as.factor(ifelse(psub$SEX==1,'M','F'))
 ```
 
 ```R
 if(<condition1>) {## do something} else if(<condition2>) {## do something different} else {## do something different}
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Loop
 
@@ -626,3 +734,8 @@ for(i in c(2,6,10:15)){
   print( sd(mydata[,i], na.rm=TRUE) )
   }
 ```
+
+
+(<a href="#top">Back to top</a>)
+<hr>
+

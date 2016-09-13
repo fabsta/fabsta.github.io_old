@@ -40,6 +40,18 @@ x_train,x_test, y_train, y_test = train_test_split(X, y, random_state = 1 )
 
 ## Linear regression
 
+R
+
+```R
+mod_fit <- train(target ~ AccountHierarchyComplexity + ContactInvolvementCount_Last12Months + ContactRolesWithPastActivities + CurrentStageActivitiesCount + 
+                   IsOverDue,  data=training, method="glm", family="binomial")
+# with all columns
+df<-data.frame(y=rnorm(10),x1=rnorm(10),x2=rnorm(10))
+lm(y~.,df)
+```
+
+Python
+
 ```python
 from sklearn import datasetsboston = datasets.load_boston()
 -
@@ -113,14 +125,21 @@ dt = DecisionTreeClassifier()dt.fit(X, y)
 preds = dt.predict(X)(y == preds).mean()
 ```
 
-## Random Forest
+## Random Forest (Regression)
+R
 
-### R
 ```R
-
+fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare +
+                                            Embarked + Title + FamilySize + FamilyID2,
+                      data=train, 
+                      importance=TRUE, 
+                      ntree=2000)
+                      
+# classification || regression: make sure that 'target' is of correct class via "class(target)" 
 ```
 
-### Python
+Python
+
 ```python
 from sklearn import datasets
 
@@ -133,14 +152,47 @@ print "Total Correct:\t", (y == rf.predict(X)).sum()
 ```
 
 ### Feature importance
+R
+
+```R
+(VI_F=importance(fit))
+varImp(fit)
+varImpPlot(fit,type=2)
+```
+
+Python
 
 ```python
 rf = RandomForestClassifier(compute_importances=True)rf.fit(X, y)f, ax = plt.subplots(figsize=(7, 5))ax.bar(range(len(rf.feature_importances_)),           rf.feature_importances_)ax.set_title("Feature Importances")
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ### Tuning Random Forest
 
+
+
 #### Confusing matrix
+R
+
+```R
+resultframe <- data.frame(OutCome=testing$target, pred=testing$predictions_result)
+rtab <- table(resultframe)
+rtab
+
+overall_accuracy <- sum(diag(rtab))/sum(rtab)
+model_precision <- sum(rtab[1,1])/sum(rtab[,1])
+model_recall <- sum(rtab[1,1])/sum(rtab[1,])
+false_positive_rate <- sum(rtab[2,1])/sum(rtab[2,])
+
+paste("overall_accuracy: ",overall_accuracy)
+paste("model_precision: ",model_precision)
+paste("model_recall: ",model_recall)
+paste("false_positive_rate: ",false_positive_rate)
+```
+
+Python
 
 ```python
 import numpy as nptraining = np.random.choice([True, False], p=[.8, .2],                                size=y.shape)from sklearn.ensemble import RandomForestClassifierrf = RandomForestClassifier()rf.fit(X[training], y[training])preds = rf.predict(X[~training])print "Accuracy:\t", (preds == y[~training]).mean()
@@ -155,6 +207,10 @@ Look at confusion matrix
 import pandas as pdconfusion_df = pd.DataFrame(confusion_matrixes)import itertoolsfrom matplotlib import pyplot as pltf, ax = plt.subplots(figsize=(7, 5))confusion_df.plot(kind='bar', ax=ax)ax.legend(loc='best')ax.set_title("Guessed vs Correct (i, j) where i is the guess and j is                 the actual.")ax.grid()ax.set_xticklabels([str((i, j)) for i, j in                       list(itertools.product(range(2), range(2)))]);ax.set_xlabel("Guessed vs Correct")ax.set_ylabel("Correct")
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
+
 #### Number of Estimators: Iterating through 1 - 20
 
 ```python
@@ -163,12 +219,18 @@ n_estimator_params = range(1, 20)confusion_matrixes = {}for n_estimator in n_e
 accuracy = lambda x: np.trace(x) / np.sum(x, dtype=float)confusion_matrixes[n_estimator] =                         accuracy(confusion_matrixes[n_estimator])accuracy_series = pd.Series(confusion_matrixes)import itertoolsfrom matplotlib import pyplot as pltf, ax = plt.subplots(figsize=(7, 5))accuracy_series.plot(kind='bar', ax=ax, color='k', alpha=.75)ax.grid()ax.set_title("Accuracy by Number of Estimators")ax.set_ylim(0, 1) # we want the full scopeax.set_ylabel("Accuracy")ax.set_xlabel("Number of Estimators")
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ## Support Vector Machine
 
 ```python
 from sklearn import datasetsX, y = datasets.make_classification()
 from sklearn.svm import SVCbase_svm = SVC()base_svm.fit(X, y)
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Decision Tree Classifier
 
@@ -177,6 +239,8 @@ from sklearn import datasetsX, y = datasets.make_classification(n_samples=10000
 		n_informative=3)from sklearn.tree import DecisionTreeClassifierdt = DecisionTreeClassifier()dt.fit(X, y)dt.predict(X)--> array([1, 1, 0, .., 2, 1, 1])
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 
 

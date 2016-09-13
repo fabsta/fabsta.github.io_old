@@ -69,6 +69,12 @@ sidebar:
 <hr>
 
 
+### Journalnodes
+In order for the Standby node to keep its state synchronized with the Active node, both nodes communicate with a group of separate daemons called "JournalNodes".
+
+* Active node logs namespace modification to majority of JNs.
+* Standby node can read edits from JNs and is constantly watching for changes in edit log
+
 ### Read Path
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hdfs_read_path.jpg)
 
@@ -87,6 +93,7 @@ sidebar:
 
 
 ### Write Path
+
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hdfs_write_path.jpg)
 
 [image source](https://www.safaribooksonline.com/library/view/hadoop-essentials/9781784396688/graphics/6688OT_03_05.jpg)
@@ -103,9 +110,59 @@ sidebar:
 <hr>
 
 ### HDFS federation
+
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/hdfs_federation.jpg)
 
 [image source](https://www.safaribooksonline.com/library/view/hadoop-essentials/9781784396688/graphics/6688OT_03_06.jpg)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+#### Active/passive Namenode
+
+* Active Namenode is the one who is writing edits to JournalNodes. 
+* DataNodes know about location of both Namenodes, they send block location information and heartbeats to both. 
+* Passive Namenode performs checkpoints (of namespace state), no Secondary NameNode required.
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+#### High availability
+
+In general, there are two approaches
+
+* Shared Storage using NFS
+* Quorum-based Storage
+
+##### Shared Storage using NFS
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/shared-edit-log1.png)
+
+[image source](https://hadoopabcd.files.wordpress.com/2015/02/shared-edit-log1.png?w=512&h=304)
+
+(<a href="#top">Back to top</a>)
+<hr>
+
+##### Quorum-based Storage
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/quorum-journal-without-zk.png)
+
+[image source](https://hadoopabcd.files.wordpress.com/2015/02/quorum-journal-without-zk.png?w=663&h=338)
+
+adds two new components to HDFS deployment
+* Zookeeper quorum
+* ZKFailoverController (ZKFC)
+
+Automatic failover relies on Zookeeper:
+
+* Each Namenode maintains persistent session in Zookeeper
+* If machine crashes, session expires
+* Other Namenode is notified to take over
+
+ZKFC is responsible for:
+
+* ZKFC pings its local Namenode. If unresponsive, ZKFC marks it as unhealthy.
+
 
 (<a href="#top">Back to top</a>)
 <hr>
@@ -607,6 +664,9 @@ Extension to history server: [spree](http://www.hammerlab.org/2015/07/25/spree-5
 ![{{base}}/images/bigdata/spree_intro.gif]({{base}}/images/bigdata/spree_intro.gif)
 [image source](http://www.hammerlab.org/images/spree/intro3.gif)
 
+#### Thrift server
+Spark Thrift Server provides JDBC/ODBC access to a Spark cluster and is used to service Spark SQL queries. Tools like Power BI, Tableau etc. use ODBC protocol to communicate with Spark Thrift Server to execute Spark SQL queries as a Spark Application. When a Spark cluster is created, two instances of the Spark Thrift Server are started, one on each head node. Each Spark Thrift Server is visible as a Spark application in the YARN UI.
+
 
 #### RDD vs dataframe
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/spark_rdd_dataframe.png)
@@ -813,7 +873,28 @@ Overview of our Kafka setup including the current state of the partitions and re
 
 (<a href="#top">Back to top</a>)
 <hr>
+
+#### Resource Manager
+
+
+#### ResourceManager HA
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/yarn_rm_ha.png)
+
+[image source](https://s3.amazonaws.com/files.dezyre.com/images/blog/Hadoop_2.0_and_YARN_Advantages_over_Hadoop_1.0_4.png)
+
+##### Manual transitions and failover
+
+When automatic failover is not enabled, admins have to manually transition one of the RMs to Active. To failover from one RM to the other, they are expected to first transition the Active-RM to Standby and transition a Standby-RM to Active. All this can be done using the “yarn rmadmin” CLI.
+
+##### Automatic failover
+
+The RMs have an option to embed the Zookeeper-based ActiveStandbyElector to decide which RM should be the Active. When the Active goes down or becomes unresponsive, another RM is automatically elected to be the Active which then takes over. Note that, there is no need to run a separate ZKFC daemon as is the case for HDFS because ActiveStandbyElector embedded in RMs acts as a failure detector and a leader elector instead of a separate ZKFC daemon.
+
+[source](https://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/ResourceManagerHA.html)
+
 ### Job submission
+
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/yarn_job_submission.png)
 [image source](https://www.safaribooksonline.com/library/view/hadoop-the-definitive/9781491901687/images/hddg_0701.png)
 
@@ -823,7 +904,9 @@ Overview of our Kafka setup including the current state of the partitions and re
 (<a href="#top">Back to top</a>)
 <hr>
 
+
 ## Mesos
+
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/mesos_architecture.jpg)
 
 [image source](http://mesos.apache.org/assets/img/documentation/architecture3.jpg)
@@ -832,12 +915,15 @@ Overview of our Kafka setup including the current state of the partitions and re
 <hr>
 
 ### Myriad - Yarn and Mesos together
+
 Deploy Yarn applications using Mesos
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/myriad_how_works.png)
 [image source](https://dmgpayxepw99m.cloudfront.net/how-it-works-5a9c93e73031b0fc13ef20061f039a69.png)
 
 
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Yarn vs Mesos
 Mesos: Manage data center
@@ -847,8 +933,12 @@ Yarn: Manage hadoop jobs
 [image source](http://image.slidesharecdn.com/mesosvs-160511175623/95/mesos-vs-yarn-an-overview-6-638.jpg?cb=1462989584)
 
 
-## Aurora 
+## Aurora
+ 
 Apache Aurora is a service scheduler that runs on top of Apache Mesos, enabling you to run long-running services, cron jobs, and ad-hoc jobs that take advantage of Apache Mesos’ scalability, fault-tolerance, and resource isolation.
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### Components
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/arurora_components.png)
@@ -871,12 +961,17 @@ Aurora also provides an admin client (aurora_admin command) that contains comman
 
 * __Mesos agent__ The agent receives work assigned by the scheduler and executes them. It interfaces with Linux isolation systems like cgroups, namespaces and Docker to manage the resource consumption of tasks. When a user task is launched, the agent will launch the executor (in the context of a Linux cgroup or Docker container depending upon the environment), which will in turn fork user processes.
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 
 ### Jobs, tasks, and processes
 
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/aurora_jobs.png)
 [image source](http://aurora.apache.org/documentation/latest/images/aurora_hierarchy.png)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Ambari
 
@@ -941,15 +1036,308 @@ Aurora also provides an admin client (aurora_admin command) that contains comman
 (<a href="#top">Back to top</a>)
 <hr>
 
+
 ## Zookeeper
+
 Apache ZooKeeper is a distributed, fault tolerant, highly available system for managing configuration information, naming, and more (distributed synchronization, anyone?).
 
 ZooKeeper appears like a filesystem to clients, it is a hierarchy of znodes, which are analogous to directories or files, both of which can contain a small amount of data.
 
-ZooKeeper can be used to store Thrift service location information
+ZooKeeper can be used to store Thrift service location information.
 
 (<a href="#top">Back to top</a>)
 <hr>
+
+### How writes are handled
+
+The master is the authority for writes: in this way writes can be guaranteed to be persisted in-order, i.e., writes are linear. Each time a client writes to the ensemble, a majority of nodes persist the information: these nodes include the server for the client, and obviously the master. This means that each write makes the server up-to-date with the master. It also means, however, that you cannot have concurrent writes.
+
+The guarantee of linear writes is the reason for the fact that ZooKeeper does not perform well for write-dominant workloads. In particular, it should not be used for interchange of large data, such as media. As long as your communication involves shared data, ZooKeeper helps you. When data could be written concurrently, ZooKeeper actually gets in the way, because it imposes a strict ordering of operations even if not strictly necessary from the perspective of the writers. Its ideal use is for coordination, where messages are exchanged between the clients.
+
+### How reads are handled
+
+This is where ZooKeeper excels: reads are concurrent since they are served by the specific server that the client connects to. However, this is also the reason for the eventual consistency: the "view" of a client may be outdated, since the master updates the corresponding server with a bounded but undefined delay.
+
+[source](http://stackoverflow.com/questions/3662995/explaining-apache-zookeeper)
+
+### Data model
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/zookeeper_data_model.jpg)
+
+[image source](http://image.slidesharecdn.com/zookeeperinthewild-rakesh-150604085733-lva1-app6892/95/zoo-keeper-in-the-wild-6-638.jpg?cb=1433408334)
+
+
+### Leader selection
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/zookeeper_master_and_slave.png)
+
+[image source](http://www.ebaytechblog.com/wp-content/uploads/2012/09/master_and_slave.png)
+
+
+### Quorum
+A replicated group of servers in the same application is called a quorum, and in replicated mode, all servers in the quorum have copies of the same configuration file
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/quorum-journal-with-zk.png)
+
+[image source](https://hadoopabcd.files.wordpress.com/2015/02/quorum-journal-with-zk.png?w=628&h=400)
+
+
+
+# Security
+
+## Knox
+
+## Ranger
+
+### Key management service
+
+stores keys in a file-based Java keystore.
+
+Main functions:
+
+* Key management: create, update + delete keys (via Web UI or REST API)
+* Access control policies: manages access control policies.
+* Audit
+
+## Kerberos
+Based on awesome tutorial from [roguelynn](http://www.roguelynn.com/words/explain-like-im-5-kerberos/).<br>
+Name comes from three-headed dog of Hades, who protected access to the underworld.
+
+
+### Ticket
+Goal: You need a ticket (on local machine)
+
+As long as it is valid, you can access the requested service that is within Kerberos realm. Avoids re-entering password.
+
+### Principal
+Represents unique identity.
+Kerberos assigns tickets to principals
+
+Format: 
+
+user
+
+```sh
+user@example.com
+```
+
+service principal
+
+```sh
+username/fully.qualified.domain.name@YOUR-REALM.COM
+```
+
+### Keytab
+File containing pairs of Kerberos principals and encrypted copy of that principals' key.
+
+* Are unique to each host (since keys include hostname)
+* file is used to authenticate a principal on a host to Kerberos
+* keytab file equivalent to password file 
+* Access to the file should be tightly secured (access to file allows to act as principal)
+* readable by minimal set of users, stored on local disk, not backed up
+
+e.g.
+
+```sh
+username/fully.qualified.domain.name@YOUR-REALM.COM   (DES cbc mode with CRC-32)
+```
+
+### Key
+For user: Key is user password. KDC stores this in encrypted form
+
+For service principals: used to encrypt messages to the client. Usually random key, stored in KDC and Keytab
+
+
+### Kerberos realm
+
+Defines what Kerberos manages in terms of who can access what.
+Both your machine and requested service live in this realm.
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/kerberos_realm.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.001.jpg)
+
+
+### Key Distribution Center
+
+Stores all secret keys for users and services in database.
+relies on symmetric-key cryptography
+
+#### Authentication Server
+
+#### Ticket Granting Server
+
+### Requesting access
+
+* each interaction contains 2 messages: one you can encrypt, the other one you cannot.
+* requested service/machine and KDC never communicate directly
+* The KDC stores all secret keys for users and services in database
+* Secret keys are: password + salt that are hashed
+
+
+#### You and Authentication Server
+
+send to server
+
+* your name/ID
+* name/ID of requested service
+* your network address
+* requested lifetime for TGT
+
+Authentication server does
+
+* ID lookup in KDC
+* randomly generates a key (session key) for you and Ticket Granting Server TGS
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.003.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.003.jpg)
+
+
+sends back two messages:
+
+TGT, encrypted with TGS Secret Key: 
+
+* your name/ID
+* the TGS name/ID
+* timestamp
+* your network address
+* lifetime of TGT
+* TGS session key
+
+Ticket granting server session key, encrypted with Client Secret Key:
+
+* TGS name/ID
+* timestamp
+* lifetime of TGT
+* TGS session key (shared key btw. you and TGS)
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.004.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.004.jpg)
+
+
+Encrypt second message to obtain TGS Session Key.
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.005.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.005.jpg)
+
+
+#### You and Ticket Granting Server
+
+
+##### You
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.006.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.006.jpg)
+
+Send messages:
+
+* Authenticator, encrypted with TGS session key
+	* your name/ID
+	* timestamp
+* unencrypted message
+	* requested HTTP service name/ID
+	* lifetime of ticket for HTTP service
+* TGT
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.006.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.006.jpg)
+
+##### Ticket Granting Server
+
+* Checks if service exists
+* decrypts TGT with secret key to get TGS session key
+* decrypts Authenticator with TGS session key
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.008.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.008.jpg)
+
+will then check
+
+* compare your client ID from the Authenticator to that of the TGT
+* compare the timestamp from the Authenticator to that of the TGT (typical Kerberos-system tolerance of difference is 2 minutes, but can be configured otherwise)
+* check to see if the TGT is expired (the lifetime element),
+* check that the Authenticator is not already in the TGS’s cache (for avoiding replay attacks), and
+if the network address in the original request is not null, compares the source’s IP address to your network address (or within the requested list) within the TGT.
+
+
+prepares two messages
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.009.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.009.jpg)
+
+HTTP Service ticket, encrypted with HTTP Secret Service Key contains:
+
+* your name/ID
+* HTTP Service name/ID
+* your network address (may be a list of IP addresses for multiple machines, or may be null if wanting to use on any machine)
+* timestamp
+* lifetime of the validity of the ticket, and
+* HTTP Service Session Key
+
+
+Encrypted with TGS session key
+
+* HTTP Service name/ID,
+* timestamp,
+* lifetime of the validity of the ticket, and
+* HTTP Service Session Key
+
+
+At this point: 
+Can decrypt second message, but not first one
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.010.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.010.jpg)
+
+
+#### You and HTTP Service
+
+##### You
+send
+
+* Authentication message, encrypted with HTTP Service Session key.
+	* your name/ID
+	* timestamp
+* Still encrypted HTTP Service Ticket
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.011.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.011.jpg)
+
+##### HTTP Service
+
+* Decrypts Ticket with Secret Key to obtain HTTP Service Session Key
+* Decrypts Authenticator message with HTTP Service Session Key
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.012.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.012.jpg)
+
+
+Service checks:
+
+* compares your client ID from the Authenticator to that of the Ticket,
+* compares the timestamp from the Authenticator to that of the Ticket (typical Kerberos-system tolerance of difference is 2 minutes, but can be configured otherwise),
+* checks to see if the Ticket is expired (the lifetime element),
+* checks that the Authenticator is not already in the HTTP Server’s cache (for avoiding replay attacks), and
+* if the network address in the original request is not null, compares the source’s IP address to your network address (or within the requested list) within the Ticket.
+
+sends Authenticator message
+
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/Kerb.013.jpg)
+
+[image source](http://www.roguelynn.com/assets/images/Kerb.013.jpg)
+
+##### You
+
+Decrypt authenticator message
 
 # Other
 
@@ -959,11 +1347,14 @@ ZooKeeper can be used to store Thrift service location information
 
 [image source](https://www.safaribooksonline.com/library/view/cassandra-the-definitive/9781491933657/assets/ctdg_1001.png)
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ## Thrift 
+
 Thrift provides a great framework for developing and accessing remote services. It allows developers to create services that can be consumed by any application that is written in a language that there are Thrift bindings for (which is...just about every mainstream one, and more).
 
-manages:
+It manages:
 
 * serialization of data to and from a service
 * the protocol that describes a method invocation, response, etc
@@ -983,7 +1374,7 @@ manages:
 
 
 ### Thrift server
-![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/thrift_server.png)
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata//thrift-server.png)
 
 [image source](http://2.bp.blogspot.com/-gh4wM0lmruQ/Va6qyamHMbI/AAAAAAAABR4/XV9y3L-wgDg/s400/thrift-server.png)
 
@@ -992,6 +1383,7 @@ manages:
 
 
 ### Comparison with SOAP and REST
+
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/rest_soap_thrift.png)
 
 [image source](http://nordicapis.com/microservice-showdown-rest-vs-soap-vs-apache-thrift-and-why-it-matters/)
@@ -1008,10 +1400,12 @@ Further reading: [link](http://thatguyfromthisworld.blogspot.de/2015/07/lets-und
 ## System of record vs system of engagement
 
 ### System of record
+
 “Systems of Record” are the ERP-type systems we rely on to run our business (financials, manufacturing, CRM, HR).  They have to be “ correct” and “integrated” so all data is consistent. And they were traditionally designed for people who have no choice but to use them.
 [source](http://www.forbes.com/sites/joshbersin/2012/08/16/the-move-from-systems-of-record-to-systems-of-engagement/#6a27371f50c4)
 
 ### System of engagement
+
 “Systems of Engagement” are systems which are used directly by employees for “ sticky uses” – like email, collaboration systems, and new social networking and learning systems.  They “engage” employees.
 [source](http://www.forbes.com/sites/joshbersin/2012/08/16/the-move-from-systems-of-record-to-systems-of-engagement/#6a27371f50c4)
 
