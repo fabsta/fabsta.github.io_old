@@ -3,9 +3,6 @@ main:
   - title: "Data Science (Q & A)"
     url: /datascience/data-science-questions-and-answers/
 
-  - title: "Big Data Concepts"
-    url: /bigdata/big-data-concepts/
-
   - title: "Python cheat sheet"
     url: /programming/python-cheat-sheet/
   
@@ -33,8 +30,20 @@ new_side:
 
   - title: Big Data
     children:
-      - title: "Concepts"
-        url: /bigdata/big-data-concepts/
+      - title: "General"
+        url: /bigdata/big-data-general/
+      - title: "Ingestion"
+        url: /bigdata/big-data-ingestion/
+      - title: "Storage"
+        url: /bigdata/big-data-storage/
+      - title: "Engines"
+        url: /bigdata/big-data-engines/
+      - title: "Management"
+        url: /bigdata/big-data-management/
+      - title: "Security"
+        url: /bigdata/big-data-security/
+      - title: "Architecture"
+        url: /bigdata/big-data-architecture/
 
   - title: Programming
     children:
