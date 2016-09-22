@@ -245,7 +245,95 @@ alter 'table1', {NAME => 'col_fam1', IN_MEMORY => 'true'}
 
 ## Kerberos
 
-### Get new ticket / refresh
+### install
+
+[biginsights](https://www.youtube.com/watch?v=JNSBcbZeai4)
+
+
+### useful commands
+
+Get new ticket / refresh
+
 ```sh
 kinit USER
+# specific user
+kinit alice/admin@EXAMPLE.COM
+# keytab file (allows to authenticate without knowledge of password)
+kinit -kt alice.keytab alice/admin@EXAMPLE.COM
+```
+
+list valid tickets
+
+```sh
+klist
+```
+
+Destroying credentials cache
+
+```sh
+kdestroy
+```
+
+#### Principal
+
+```sh
+# Adding new principal:
+kadmin: addprinc alice@EXAMPLE.COM
+# Displaying the details of a principal in the Kerberos database
+kadmin: getprinc alice@EXAMPLE.COM
+# Deleting a principal from the Kerberos database
+kadmin: delprinc alice@EXAMPLE.COM
+# Listing all the principals in the Kerberos database
+kadmin: listprincs
+```
+
+### Kerberos utilities
+
+* kdb5_util: Maintenance utility for Kerberos database. Used for creating Realm etc.
+* kadmin: Admin utility for Kerberos which internally uses kadmind. Used for remote administration
+* kadmin.local: Admin utility that access the Kerberos database directly
+* kadmind: Kerberos admin server daemon
+* kinit: Kerberos client to authenticate with Kerberos and retrieve the TGT
+* kpasswd: Utility for changing the users password
+* klist: Utility to view the Kerberos tickets
+
+### Troubleshooting
+
+* access logs on ticket granting server (TGS)
+* display http headers that are send 
+
+
+# Ambari
+
+## Metrics
+
+### debugging
+```sh
+# log location
+/var/log/ambari-metrics-collector/
+# verify available disk space
+df -h
+# verify available memory 
+free -m
+# see running processes/cpu usage for user ams
+top -u ams
+# Check HBase regionserver and HMaster are still running 
+ps -ef | grep ams
+```
+
+# HDFS
+
+## Job history server
+
+via command line:
+
+```sh
+hadoop job -list
+```
+
+# Web UIs
+
+```sh
+#job history
+:8443/gateway/jobhistoryui/history
 ```

@@ -532,6 +532,39 @@ Finally, the databases derived from Amazon’s Dynamo design include Cassandra, 
 (<a href="#top">Back to top</a>)
 <hr>
 
+### HiveQL
+
+### DDL
+
+### HCatalog
+
+* Built on top of Hive Metastore
+* Incorporates components from Hive DDL
+
+
+### Web Interface
+
+#### Hive Web Interface
+
+Functions:
+
+* Schema browsing
+* Detached Query execution
+* No local installation
+
+
+#### WebHCat
+
+Functions:
+
+* applications can make HTTP requests to access the Hive metastore
+* create or queue Hive queries and commands
+* Pig jobs
+* MapReduce or Yarn jobs
+
+
+
+
 ## Tez
 Apache Tez is part of the Stinger initiative.
 Tez generalizes the MapReduce paradigm to a more powerful framework based on expressing computations as a dataflow graph. Tez exists to address some of the limitations of MapReduce. For example, in a typical MapReduce, a lot of temporary data is stored (such as each mapper's output, which is a disk I/O), which is an overhead. In the case of Tez, this disk I/O of temporary data is saved, thereby resulting in higher performance compared to the MapReduce model.
@@ -567,7 +600,17 @@ Tez LLAP process compared to Tez execution process and MapReduce process
 [image source](http://hortonworks.com/wp-content/uploads/2016/07/Hive-2.1-blog-LLAP-Architecture.png)
 
 
+## Drill
 
+* not tied into Hadoop
+* more flexible query & execution layer
+* still in incubation
+
+## Impala
+
+* dependent on Hadoop
+* dependent on Hive Metastore
+* rumour to not fall back to disk when memory exceeded
 
 
 ## Comparison 

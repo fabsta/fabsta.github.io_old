@@ -904,6 +904,8 @@ The RMs have an option to embed the Zookeeper-based ActiveStandbyElector to deci
 (<a href="#top">Back to top</a>)
 <hr>
 
+## Slider
+
 
 ## Mesos
 
