@@ -203,6 +203,7 @@ newdf
 # Summary
 
 ## by index,name
+
 ```R
 df$site        # the site vector
 df$quadrat     # the quadrat vector
@@ -246,15 +247,22 @@ min   #Minimum value in a vector.max  # Maximum value in a vector.mean  # Mean
 
 ## Info
 
+### Type of Column
+```R
+sapply(df[ , !nums], class)
+```
+
 ## Selecting
 
 ### by name
+
 ```R
 mydata$site        # the site vector
 mydata$quadrat     # the quadrat vector
 ```
 
 ### only numeric features
+
 ```R
 nums <- sapply(x, is.numeric)
 # Then standard subsetting
@@ -471,6 +479,7 @@ newdata <- cbind(newdata1, newdata2)
 
 
 ## Merging
+
 ```R
 total <- merge(dataframeA, dataframeB, by="ID")
 ```

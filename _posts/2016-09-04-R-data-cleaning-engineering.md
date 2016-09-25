@@ -51,42 +51,47 @@ things to look for when using summary
 ### Charts
 
 #### Pie 
+
 ```R
 pie(table(df$glob_IsWon))
 ```
 
 #### Histogram
+
 ```R
 hist(df$StageIdList)
 ```
 
 #### Scatterplot
+
 ```R
 plot(iris$Sepal.Length, iris$Sepal.Width)
 ```
 
 #### Correlation plot
+
 ```R
 library(corrplot)
 corrplot(cor(X), order = "hclust")
 ```
 
 #### Bar chart
+
 ```R
 ggplot(custdata) + geom_bar(aes(x=marital.stat), fill="gray")
 ```
 #### Density plot
 ```R
 library(scales)
-
+#
 ggplot(df) + geom_density(aes(x=UserInvolvement_RecencyScore)) +
   scale_x_continuous(labels=dollar)
-
 ```
 
 ## Summarizing and Computing Descriptive Statistics
 
 ### Unique values 
+
 ```R
 unique(df['glob_IsWon'])
 ```
@@ -94,7 +99,27 @@ unique(df['glob_IsWon'])
 ### Sum, Describe
 
 ### Correlation / Covariance
+
+
+### Variance
+
+#### zero Variance
 ```R
+df_new <- df[sapply(df, function(x) length(levels(factor(x)))>1)]
+```
+
+#### near zero variance
+```R
+nzv_cols <- nearZeroVar(GermanCredit)
+# If you want to save metrics
+nzv_cols <- nearZeroVar(GermanCredit, saveMetrics = TRUE)
+if(length(nzv_cols) > 0) GermanCredit <- GermanCredit[, -nzv_cols]
+```
+### Remove columns with standard deviation of zero
+```R
+all_sd_zero <- sapply(df, function(x) { sd(x) == 0})
+# use sd(data$var, na.rm=TRUE) to ignore NA values
+df <- df[!all_sd_zero]
 ```
 
 ### Unique Values, Value Counts, and Membership
@@ -119,6 +144,7 @@ unique(df['glob_IsWon'])
 ## Handling Missing Data
 
 ### create shadow matrix
+
 ```R
 x <- as.data.frame(abs(is.na(sleep)))
 y <- x[which(sd(x) > 0)]# extracts the variables that have some (but not all) missing values, andcor(y)
@@ -127,6 +153,7 @@ gives you correlations among indicator variables. of missing values.
 
 
 ### using linear regression
+
 ```R
 ## impute missing values with linear regression
 imput_age <- lm(age~., data = full_imp)
@@ -154,6 +181,34 @@ full_imp[is.na(full_imp[, age]), age := .(imp_age)]
 # Data Wrangling: Clean, Transform, Merge, Reshape
 [tidy-data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
 
+## Business understanding
+
+* Are the features continuous, discrete or none of the above?
+
+* What is the distribution of this feature?
+
+* Does the distribution largely depend on what subset of examples is being considered? 
+	* Time-based segmentation? 
+	* Type-based segmentation?
+
+* Does this feature contain holes (missing values)?
+	* Are those holes possible to be filled, or would they stay forever?
+	* If it possible to eliminate them in the future data?
+
+* Are there duplicate and/or intersecting examples?
+	* Answering this question right is extremely important, since duplicate or connected data points might significantly affect the results of model validation if not properly excluded.
+
+* Where do the features come from?
+	* Should we come up with the new features that prove to be useful, how hard would it be to incorporate those features in the final design?
+
+* Is the data real-time?
+	* Are the requests real-time?
+
+* If yes, well-engineered simple features would likely rock.
+	* If no, we likely are in the business of advanced models and algorithms.
+
+* Are there features that can be used as the "truth"?
+
 ## Combining and Merging Data Sets
 
 ## Reshaping and Pivoting
@@ -163,6 +218,7 @@ full_imp[is.na(full_imp[, age]), age := .(imp_age)]
 
 
 ### x columns -> 1 column (using gather)
+
 Gather the non-variable columns into a two-column key-value pair.
 
 Making wide dataset long.
@@ -205,7 +261,7 @@ gather(week, rank, wk1:wk76, na.rm = TRUE)
 ```R
 nums <- sapply(x, is.numeric)
 # Then standard subsetting
-x[ , nums]
+x[ , nums] || x[,!nums] for the opposite
 ```
 
 ## Data Transformation
@@ -219,6 +275,30 @@ billboard3 <- billboard2 %>%
     date = as.Date(date.entered) + 7 * (week - 1)) %>%
   select(-date.entered)
 ```
+
+mutate  - revalue
+
+```R
+data = data %>%
+  mutate(CalculatedProgressStage_new = revalue(CalculatedProgressStage,
+                                   c("APPROACH" = "aufgehts",
+                                     "NEGOTIATE" = "verhandelne",
+                                     "QUALIFY" = "other handpump"
+                                     )))
+```
+
+
+replace all NAs with mean
+
+```R
+for(i in 1:ncol(df)){
+    cat("checking col: ",str(i),df[names())
+    df[is.na(df[,i]), i] <- mean(df[,i], na.rm = TRUE)
+}
+```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 #### 1 column -> x columns
 
@@ -244,6 +324,7 @@ tidy %>% head(8)
 <hr>    
 
 #### if-else
+
 ```R
 outcome <- ifelse (score > 0.5, "Passed", "Failed")
 ```
@@ -259,6 +340,8 @@ is.factor(df$target)
 is.character(df$target)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### Boolean
 
@@ -268,6 +351,9 @@ is.character(df$target)
 cols <- sapply(dat, is.logical)
 dat[,cols] <- lapply(dat[,cols], as.numeric)
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### Numbers
 
@@ -283,15 +369,15 @@ nchar(x[3]) returns 5
 # substr
 x <- "abcdef"
 substr(x, 2, 4) returns “bcd”
-
 # grep
 grep("A", c("b","A","c"), fixed=TRUE)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
 
 #### String to Integer
 ```R
-
 ```
 
 (<a href="#top">Back to top</a>)
@@ -323,6 +409,7 @@ frame
 <hr>  
 
 ##### Grep string -> new column
+
 ```R
 extractTitle <- function(name){
 	name <- as.character(name)
@@ -368,6 +455,7 @@ df$col[]
 ```
 
 ### recoding missing values
+
 ```R
 leadership$age[leadership$age == 99] <- NA
 ```
@@ -390,6 +478,7 @@ newdata <- na.omit(df)
 ### Convert 
 
 #### Character types
+
 ```R
 mydata$x <- as.factor(mydata$x)     # character to factor 
 mydata$x <- as.character(mydata$x)  # factor to character
@@ -415,11 +504,13 @@ dates <- as.Date(strDates, "%m/%d/%Y")
 R stores dates internally, they’re represented as the number of days since January 1, 1970,
 
 ##### as weekday
+
 ```R
 weekdays(as.Date('16-08-2012','%d-%m-%Y'))
 ```
 
 ##### day in week to 'workweek' 'weekend'
+
 ```R
 data$day = factor(NA,levels=c('workweek','weekend'))
 data$day[day >= 0 & day < 5] <- 'workweek'
@@ -458,16 +549,23 @@ difftime(today, dob, units="weeks")
 ### Standardizing
 
 #### Scale
+
 Standardizes the specified columns of a matrix or data frame to a mean of 0 and a standard deviation of 1
+
 ```R
 newdata <- scale(mydata)
 z <- scale(df[,2:4])
 ```
 
+
 ```R
 newdata <- scale(mydata)*SD + M
 newdata <- transform(mydata, myvar = scale(myvar)*10+50)
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
+
 
 # Data Aggregation and Group Operations
 
@@ -494,6 +592,9 @@ training <- GermanCredit[ Train, ]
 testing <- GermanCredit[ -Train, ]
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 # Use cases
 
 ## assign quantiles to student scores
@@ -506,6 +607,7 @@ z
   [3,] -1.026  -0.847  -0.697
   [4,] -1.649  -0.590  -1.247
 ```
+
 Get a performance score for each student by calculating the row means using the mean() function and adding it to the roster using the cbind() function
 
 ```R
@@ -540,3 +642,6 @@ roster
 2    Angela Williams  600      99      22  0.924      A
 3   Bullwinkle Moose  412      80      18 -0.857      D
 ```
+
+(<a href="#top">Back to top</a>)
+<hr>
