@@ -28,7 +28,7 @@ library(dplyr)
 
 ### CSV
 ```R
-train <- read.csv("../train.csv", stringsAsFactors = F, row.names = 1)
+train <- read.csv("../train.csv", stringsAsFactors = F, row.names = 1,sep=",")
 # Column headers are values, not variable names
 pew <- tbl_df(read.csv("pew.csv", stringsAsFactors = FALSE, check.names = FALSE))
 ```
@@ -109,6 +109,11 @@ gives
 2  2   control 0.22543662 0.4296715 0.5959253 0.26417767
 3  3 treatment 0.27453052 0.6516557 0.3580500 0.39879073
 4  4   control 0.27230507 0.5677378 0.4288094 0.83613414
+```
+
+#### vectors
+```R
+x<-rnorm(1000, mean=0, sd=50)
 ```
 
 (<a href="#top">Back to top</a>)
@@ -429,6 +434,10 @@ library(reshape)leadership <- rename(leadership,                     c(manager
 
 ```R
 idata = readRDS("data/idata-renamed.Rds")sapply(idata, class)#> Country Country Code Year Year Code top10 #> "character" "character" "integer" "character" "character" #> bot10 gini b40_cons gdp_percap#> "character" "character" "character" "character"
+#
+data_types <- sapply(names(df),function(x){class(df[[x]])})
+unique_data_types <- unique(data_types)
+
 ```
 
 (<a href="#top">Back to top</a>)
@@ -560,6 +569,7 @@ name_freq <- table(names)/length(names)
 
 
 ## missingness & new zero variance
+
 ```R
 summary(sapply(training, is.na)) # any missing values? nope
 nearZeroVar(training)
@@ -633,7 +643,25 @@ ignore <- union(ignore, c("temp_3pm", "pressure_9am", "temp_9am"))
 (<a href="#top">Back to top</a>)
 <hr>
 
+
+## Significant differences btw variables (Wilcoxon)
+```R
+test=vector(length = 12)
+names(test)=names(spine)[1:12]
+# for each column, compute significance test 
+for (k in 1:12){
+  test[k]=t.test(spine[spine["predicted_class"]=="Normal",k],
+                 spine[spine["predicted_class"]=="Abnormal",k])$p.value
+}
+#correcting p-values for multiple testing
+test_adj=p.adjust(test)
+print(cbind(sort(test_adj)))
+# keep only significant variables (p<0.05)
+spine_red=spine[,c(which(test_adj<0.05),13)]
+```
+
 ## matrix of scatter plots
+
 ```R
 pairs(iris)
 ```

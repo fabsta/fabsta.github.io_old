@@ -23,6 +23,14 @@ Current count of questions: 88 (06.08.2016)
 * TOC
 {:toc}
 
+## Descriptive statistics
+
+### P-value
+"In frequentist statistics, the p-value is a function of the observed sample results (a test statistic) relative to a statistical model, which measures how extreme the observation is."
+[source](https://en.wikipedia.org/wiki/P-value)
+
+![picture](https://upload.wikimedia.org/wikipedia/en/0/00/P-value_Graph.png)
+[picture source](https://upload.wikimedia.org/wikipedia/en/0/00/P-value_Graph.png)
 
 
 ## Data mining
@@ -63,7 +71,7 @@ Cross Industry Standard Process for Data Mining, commonly known by its acronym C
 * Expert knowledge: models detect potential outliers and they are validated by subject matter expert
 
 
-## DataPreparation
+## Data Preparation
 
 
 ### What are possible ways to reduce data dimensionality?
@@ -198,6 +206,24 @@ Several methods can be used to avoid "overfitting" the data
 
 <hr>
 
+### When should you perform feature scaling and mean normalization on the given data?
+
+Make sure features are on a similar scale<br>
+
+"In this situation if you use a simple Euclidean metric, the age feature will not play any role because it is several order smaller than other features" [source](https://www.quora.com/When-should-you-perform-feature-scaling-and-mean-normalization-on-the-given-data-What-are-the-advantages-of-these-techniques)
+
+1. It makes your training faster.
+2. It prevents you from getting stuck in local optima.
+3. It gives you a better error surface shape. 
+4. Wweight decay and bayes optimization can be done more conveniently.
+
+[Andrew Ng about feature scaling](https://www.youtube.com/watch?v=aJmorz9gD4g)
+
+(<a href="#top">Back to top</a> \| [source](https://www.quora.com/When-should-you-perform-feature-scaling-and-mean-normalization-on-the-given-data-What-are-the-advantages-of-these-techniques))
+
+<hr>
+
+
 ### What is the difference between bias and variance?
 
 ![http://blog.fliptop.com/wp-content/uploads/2015/01/Bias_Variance.jpg](http://blog.fliptop.com/wp-content/uploads/2015/01/Bias_Variance.jpg)
@@ -259,15 +285,6 @@ Here is a more modern example where it is very hard to understand the column plo
 <hr>
 
 ## Natural language processing
-
-### What is Natural Language Processing (NLP)
-A Computer Science field connected to Artificial Intelligence and Computational Linguistics which focuses on interactions between computers and human language and a machine’s ability to understand, or mimic the understanding of human language. Examples of NLP applications include Siri and Google Now.
-
-(<a href="#top">Back to top</a> \| 
-[source](http://blog.aylien.com/post/118289638578/10-common-nlp-terms-explained-for-the-text))
-
-<hr>
-
 
 ### What is Natural Language Processing (NLP)
 A Computer Science field connected to Artificial Intelligence and Computational Linguistics which focuses on interactions between computers and human language and a machine’s ability to understand, or mimic the understanding of human language. Examples of NLP applications include Siri and Google Now.
@@ -533,9 +550,10 @@ General approach to tree-based regression
 
 
 ## Naive Bayes
+
 ### Why is naive Bayesian classification called naive?
 
-Naive Bayesian Classification (NBC) isreferred to as naive since it makes tha assumption that each of its inputs are independent of each other, an assumption which rarely holds true, and hence the word naive. Research has however shown that even though this assumption is often false, the technique still performs well, and hence NBC is seen as a simple yet powerful tool in the world of classification and machine learning. 
+Naive Bayesian Classification (NBC) is referred to as naive since it makes the assumption that each of its inputs are independent of each other, an assumption which rarely holds true, and hence the word naive. Research has however shown that even though this assumption is often false, the technique still performs well, and hence NBC is seen as a simple yet powerful tool in the world of classification and machine learning. 
 
 (<a href="#top">Back to top</a> \| [source](http://www.answers.com/Q/Why_is_naive_Bayesian_classification_called_naive))
 
@@ -557,13 +575,29 @@ General approach to naïve Bayes
 ### What is a general approach to K-means clustering?
 
 General approach to k-means clustering
-1. Collect: Any method.2. Prepare: Numeric values are needed for a distance calculation, and nominal val- ues can be mapped into binary values for distance calculations.3. Analyze: Any method.4. Train: Doesn’t apply to unsupervised learning.5. Test: Apply the clustering algorithm and inspect the results. Quantitative error measurements such as sum of squared error (introduced later) can be used.6. Use: Anything you wish. Often, the clusters centers can be treated as represen- tative data of the whole cluster to make decisions.
+1. Collect: Any method.2. Prepare: Numeric values are needed for a distance calculation, and nominal values can be mapped into binary values for distance calculations.3. Analyze: Any method.4. Train: Doesn’t apply to unsupervised learning.5. Test: Apply the clustering algorithm and inspect the results. Quantitative error measurements such as sum of squared error (introduced later) can be used.6. Use: Anything you wish. Often, the clusters centers can be treated as represen- tative data of the whole cluster to make decisions.
 
+![http://people.revoledu.com/kardi/tutorial/kMean/image/Algorithm_clip_image002_0002.gif](http://people.revoledu.com/kardi/tutorial/kMean/image/Algorithm_clip_image002_0002.gif)
+[picture source](http://people.revoledu.com/kardi/tutorial/kMean/image/Algorithm_clip_image002_0002.gif)
 
 (<a href="#top">Back to top</a> \| [source](([source](https://www.manning.com/books/machine-learning-in-action))))
 <hr>
 
 ## Support Vector machines
+
+### What is a hyperplane?
+In a p-dimensional space, a **hyperplane** is a flat, affine subspace of dimension p-1. E.g in a 2-dimensional space, 
+a hyperplane is a line.
+
+$$ \beta_0 + \beta_1 X_1 + \beta_2 X2 \ldots + \beta_n X_n = 0 $$
+
+
+![{{base}}/images/datascience/svm.png]({{base}}/images/datascience/svm.png)
+[image source](...)
+* __Maximal margin hyperplane__ is shown in solid line. 
+* The distance of the maximal margin hyperplane to either of the dashed lines is called __margin__.
+* The two blue and the one purple point are the __support vectors__.
+
 
 ### What is a general approach to Support Vector machines?
 
@@ -574,7 +608,8 @@ General approach to SVMs1. Collect: Any method.2. Prepare: Numeric values are
 <hr>
 
 ### What means linearly separable and what is a separating hyperplane?
-If you have two groups of data, and the data points are sep- arated enough that you could draw a straight line with all the points of one class on one side of the line and all the points of the other class on the other side of the line. This line is called separating hyperplane.
+
+If you have two groups of data, and the data points are separated enough that you could draw a straight line with all the points of one class on one side of the line and all the points of the other class on the other side of the line. This line is called separating hyperplane.
 
 ([source](https://www.manning.com/books/machine-learning-in-action))
 
@@ -586,7 +621,7 @@ If you have two groups of data, and the data points are sep- arated enough that 
 
 ### What does the “support” mean in Support Vector Machine?
 
-"In SVMs the resulting separating hyper-plane is attributed to a sub-set of data feature vectors (i.e., the ones that their associated Lagrange multipliers are greater than 0). These feature vectors were named support vectors because intuitively you could say that they "support" the separating hyper-plane or you could say that for the separating hyper-plane the support vectors play the same role as the pillars to a building."
+"In SVMs the resulting separating hyperplane is attributed to a sub-set of data feature vectors (i.e., the ones that their associated Lagrange multipliers are greater than 0). These feature vectors were named support vectors because intuitively you could say that they "support" the separating hyper-plane or you could say that for the separating hyper-plane the support vectors play the same role as the pillars to a building."
 
 
 (<a href="#top">Back to top</a> \| [source](http://stackoverflow.com/questions/21694855/what-does-the-support-mean-in-support-vector-machine?rq=1))
@@ -611,6 +646,7 @@ If the data is not linearly separable, we relax our constraint that no data poin
 (<a href="#top">Back to top</a> \| [picture source](http://i.stack.imgur.com/npEOk.png))
 
 <hr>
+
 
 ### What is a kernel-method?
 
@@ -657,11 +693,28 @@ There are three broad classes of ensemble algorithms:
 The idea behind ensembles is straightforward.  Using multiple models and combining their results generally increases the performance of a model or at least reduces the probability of selecting a poor one.  One of the most interesting implications of this is that the ensemble model may in fact not be better than the most accurate single member of the ensemble, but it does reduce the overall risk. 
 There are a number of strategies for combining single predictors into ensembles represented by the three major groups above and lots of detailed variation among implementations even within these groups.  Despite the warning that ensembles can actually only guarantee to reduce risk, most of us have experienced that our most accurate models are in fact ensembles.
 
-![http://api.ning.com/files/wrR3Z9xe9sJq990CffTVJP9ybHkxezcp8wahDWYxsRibma25ni*N4AUCGG7KEkglFLEwD8mdCW7XMxVNZTuh05ktVnRZBPmi/Combining_classifiers2.jpg](http://api.ning.com/files/wrR3Z9xe9sJq990CffTVJP9ybHkxezcp8wahDWYxsRibma25ni*N4AUCGG7KEkglFLEwD8mdCW7XMxVNZTuh05ktVnRZBPmi/Combining_classifiers2.jpg)
+
+Every algorithm consists of two steps:
+
+* Producing a distribution of simple ML models on subsets of the original data.
+* Combining the distribution into one "aggregated" model.
+
+[source](http://stats.stackexchange.com/questions/18891/bagging-boosting-and-stacking-in-machine-learning)
+
+![http://api.ning.com/files/wrR3Z9xe9sJq990CffTVJP9ybHkxezcp8wahDWYxsRibma25ni\*N4AUCGG7KEkglFLEwD8mdCW7XMxVNZTuh05ktVnRZBPmi/Combining_classifiers2.jpg](http://api.ning.com/files/wrR3Z9xe9sJq990CffTVJP9ybHkxezcp8wahDWYxsRibma25ni*N4AUCGG7KEkglFLEwD8mdCW7XMxVNZTuh05ktVnRZBPmi/Combining_classifiers2.jpg)
 
 (<a href="#top">Back to top</a> \| [source](([source](http://www.datasciencecentral.com/profiles/blogs/want-to-win-at-kaggle-pay-attention-to-your-ensembles?overrideMobileRedirect=1))))
 <hr>
 
+#### Comparison table
+
+![http://i.stack.imgur.com/RFfqb.png][http://i.stack.imgur.com/RFfqb.png]
+
+[image source](http://i.stack.imgur.com/RFfqb.png)
+
+### What is stacking?
+
+![http://i.imgur.com/QBuDOjs.jpg](http://i.imgur.com/QBuDOjs.jpg)
 
 ### How would you compare Bagging and boosting?
 
@@ -976,7 +1029,7 @@ General approach to FP-growth1. Collect: Any method.2. Prepare: Discrete data
 ROC (Receiver operating characteristic) curve and learning curve are synonymous
 
 "A ROC curve is a graphical depiction of classifier performance that shows the trade-off between increasing true positive rates (on the vertical axis) and increasing false positive rates (on the horizontal axis) as the discrimination threshold of the classifier is varied. Thus, only a single parameter (the decision / discrimination threshold) associated with the model is changing at different points on the plot. This ROC curve (from Wikipedia) shows performance of three different classifiers."
-
+[source](http://stackoverflow.com/questions/4617365/what-is-a-learning-curve-in-machine-learning)
 
 
 

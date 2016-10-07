@@ -7,8 +7,6 @@ sidebar:
   nav: "new_side"
 ---
 
-
-
 ### Table of contents
 
 * TOC
@@ -144,6 +142,9 @@ Consists of:
 
 Kerberos uses the domain's Active Directory as its account database.
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 #### Kerberos tray 
 
 * Place in memory where TGTs and service tickets are stored
@@ -189,6 +190,9 @@ e.g.
 username/fully.qualified.domain.name@YOUR-REALM.COM   (DES cbc mode with CRC-32)
 ```
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ### Key
 
 For user: Key is user password. KDC stores this in encrypted form
@@ -224,6 +228,9 @@ consists of two services:
 
 * Authentication Server
 * Ticket Granting Server
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### Requesting access
 
@@ -293,9 +300,11 @@ Encrypt second message to obtain TGS Session Key.
 (<a href="#top">Back to top</a>)
 <hr>
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 
 #### You and Ticket Granting Server
-
 
 ##### You
 
@@ -415,6 +424,9 @@ sends Authenticator message
 
 [image source](http://www.roguelynn.com/assets/images/Kerb.013.jpg)
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ##### You
 
 Decrypt authenticator message
@@ -486,6 +498,9 @@ Delegation token authentication is a two-party authentication protocol based on 
 
 [source](http://hortonworks.com/blog/the-role-of-delegation-tokens-in-apache-hadoop-security/)
 
+(<a href="#top">Back to top</a>)
+<hr>
+
 ### Job tokens
 
 
@@ -503,8 +518,8 @@ Delegation token authentication is a two-party authentication protocol based on 
 (<a href="#top">Back to top</a>)
 <hr>
 
-### Hive Authorization Provider
 
+### Hive Authorization Provider
 
 #### ATZ-NG
 SQL-based authorization
@@ -519,6 +534,7 @@ If hive authorization is enabled, this is how requests will flow (with fine and 
 <hr>
 
 ## Data encryption
+Good video: [youtube link](https://www.youtube.com/watch?v=rTiEcRwy5G4)
 
 Encryption is at different layers: 
 
@@ -530,6 +546,9 @@ Encryption is at different layers:
 ### When writing a file to HDFS
 
 1. The HDFS client calls create() to write to the new file.2. The NameNode requests the KMS to create a new EDEK using the EZK-id/version.3. The KMS generates a new DEK.4. The KMS retrieves the EZK from the key server.5. The KMS encrypts the DEK, resulting in the EDEK.6. The KMS provides the EDEK to the NameNode.7. The NameNode persists the EDEK as an extended attribute for the file metadata.8. The NameNode provides the EDEK to the HDFS client.9. The HDFS client provides the EDEK to the KMS, requesting the DEK.10. The KMS requests the EZK from the key server.11. The KMS decrypts the EDEK using the EZK.12. The KMS provides the DEK to the HDFS client.13. The HDFS client encrypts data using the DEK.14. The HDFS client writes the encrypted data blocks to HDFS.
+
+(<a href="#top">Back to top</a>)
+<hr>
 
 ### When reading a file from HDFS
 
@@ -561,8 +580,6 @@ decrypts EDEK, use DEK to read/write data
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/ranger_kms_keys.png)
 
 [image source](http://hortonworks.com/wp-content/uploads/2015/06/hdfs_sec_2.png)
-
-
 
 (<a href="#top">Back to top</a>)
 <hr>

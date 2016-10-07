@@ -17,10 +17,8 @@ new_side:
     children:
       - title: "Questions & Answers"
         url: /datascience/data-science-questions-and-answers/
-      - title: "Data cleaning & engineering (P)"
-        url: /programming/python-data-cleaning-engineering/
-      - title: "Data cleaning & engineering (R)"
-        url: /programming/R-data-cleaning-engineering/
+      - title: "Data cleaning & engineering (P/R)"
+        url: /programming/data-cleaning-engineering/
       - title: "Machine learning (P/R)"
         url: /programming/machine-learning/ 
       - title: "Plotting (P)"

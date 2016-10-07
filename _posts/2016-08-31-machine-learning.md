@@ -38,7 +38,10 @@ x_train,x_test, y_train, y_test = train_test_split(X, y, random_state = 1 )
 <hr>
 
 
-## Linear regression
+## Linear models
+
+### GLM
+predictors may be continuous, categorical (need to be dummyfied, n-1 new variables for n-categories) or mixture.
 
 R
 
@@ -86,6 +89,15 @@ my_model_fit = smf.ols(my_model, data = df).fit()
 
 
 # Clustering
+
+## Principal component analysis
+R
+
+```R
+spine_pca = prcomp(spine[,1:12],scale. = T)
+plot(spine_pca$x[,1], spine_pca$x[,2],col=spine$predicted_class,
+     xlab="PC1",ylab="PC2",main="PCA of spine dataset")
+```
 
 ## KMeans
 
