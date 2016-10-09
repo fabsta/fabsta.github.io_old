@@ -7,19 +7,6 @@ sidebar:
   nav: "new_side"
 ---
 
-<table>
-<tr>
-<th>
-```R just a test
-```</th>
-</tr>
-<tr>
-<td></td>
-</tr>
-</table>
-
-
-
 # Table of contents
 
 * TOC
@@ -35,7 +22,14 @@ sidebar:
 
 ### Preparation
 
+```python
+# Python
+
+```
+
 ```R
+# R
+
 # using tbl_df for better printing
 library(dplyr)
 df <- tbl_df(df)class(df)
@@ -49,8 +43,14 @@ names(df) <- normVarNames(names(df))
 ## Exploration
 
 ### Get examples for each column
+```python
+# Python
+
+```
 
 ```R
+# R
+
 str(df)
 t(df)[,1:2]
 ```
@@ -62,12 +62,14 @@ t(df)[,1:2]
 
 ```python
 # Python
+
 df.describe()
 df['glob_IsWon'].value_counts()
 ```
 
 ```R
 # R
+
 summary(df$glob_IsWon)
 # or
 table(df$glob_IsWon)
@@ -87,6 +89,10 @@ things to look for when using summary
 <hr>
 
 ### Types/classes
+```python
+# Python
+
+```
 
 ```R
 # R
@@ -101,6 +107,11 @@ table(data_types)
 <hr>
 
 ### Select only (numeric | logical ) features
+```python
+# Python
+
+```
+
 ```R
 # R
 
@@ -112,6 +123,10 @@ x[ , nums] || x[,!nums] for the opposite
 ### Charts
 
 #### Pie 
+```python
+# Python
+
+```
 
 ```R
 # R
@@ -123,17 +138,26 @@ pie(table(df$glob_IsWon))
 
 ```python
 # Python
+
 df['ApplicantIncome'].hist(bins=50)
 ```
 
 ```R
 # R
+
+
 hist(df$StageIdList)
 ```
 
 #### Scatterplot
+```python
+# Python
+
+```
 
 ```R
+# R
+
 plot(iris$Sepal.Length, iris$Sepal.Width)
 ```
 
@@ -141,24 +165,45 @@ plot(iris$Sepal.Length, iris$Sepal.Width)
 
 ```python
 # Python
+
 df.boxplot(column='ApplicantIncome')
 df.boxplot(column='ApplicantIncome', by = 'Education')
 ```
 
 #### Correlation plot
+```python
+# Python
+
+```
 
 ```R
+# R
+
 library(corrplot)
 corrplot(cor(X), order = "hclust")
 ```
 
 #### Bar chart
+```python
+# Python
+
+```
 
 ```R
+# R
+
 ggplot(custdata) + geom_bar(aes(x=marital.stat), fill="gray")
 ```
+
 #### Density plot
+```python
+# Python
+
+```
+
 ```R
+# R
+
 library(scales)
 #
 ggplot(df) + geom_density(aes(x=UserInvolvement_RecencyScore)) +
@@ -169,8 +214,14 @@ ggplot(df) + geom_density(aes(x=UserInvolvement_RecencyScore)) +
 <hr>
 
 ### Variable roles
+```python
+# Python
+
+```
+
 ```R
 # R
+
 target <- "rain_tomorrow"risk   <- "risk_mm"id     <- c("date", "location")
 
 predictorNames <- setdiff(names(traindf), outcomeName)
@@ -185,8 +236,14 @@ predictorNames <- setdiff(names(traindf), outcomeName)
 <hr>
 
 ### Unique values 
+```python
+# Python
+
+```
 
 ```R
+# R
+
 unique(df['glob_IsWon'])
 ```
 
@@ -196,6 +253,7 @@ unique(df['glob_IsWon'])
 ### Missing values
 ```python
 # Python
+
 df.apply(lambda x: sum(x.isnull()),axis=0) 
 ```
 
@@ -203,6 +261,8 @@ df.apply(lambda x: sum(x.isnull()),axis=0)
 
 #### Sum + plot using pipeline
 ```R
+# R
+
 data %>%
   select(SVM, `Random Forest`, `Neural Net`, GBM) %>%
   gather(method, used) %>%
@@ -220,11 +280,13 @@ data %>%
 
 ```python
 # Python
+
 df.corr()
 ```
 
 ```R
 # R
+
 df.cor
 ### highly correlated variables
 mc <- cor(ds[which(sapply(ds, is.numeric))], use="complete.obs")mc[upper.tri(mc, diag=TRUE)] <- NAmc <-  mc %>%  abs() %>%  data.frame() %>%  mutate(var1=row.names(mc)) %>%  gather(var2, cor, -var1) %>%  na.omit()mc <- mc[order(-abs(mc$cor)),]mc
@@ -235,8 +297,14 @@ mc <- cor(ds[which(sapply(ds, is.numeric))], use="complete.obs")mc[upper.tri(mc
 ### Variance
 
 #### zero Variance
+```python
+# Python
+
+```
 
 ```R
+# R
+
 df_new <- df[sapply(df, function(x) length(levels(factor(x)))>1)]
 # or
 (ids   <- which(sapply(ds, function(x) length(unique(x))) == nrow(ds)))
@@ -246,7 +314,14 @@ df_new <- df[sapply(df, function(x) length(levels(factor(x)))>1)]
 <hr>
 
 #### near zero variance
+```python
+# Python
+
+```
+
 ```R
+# R
+
 nzv_cols <- nearZeroVar(GermanCredit)
 # If you want to save metrics
 nzv_cols <- nearZeroVar(GermanCredit, saveMetrics = TRUE)
@@ -259,7 +334,14 @@ if(length(nzv_cols) > 0) GermanCredit <- GermanCredit[, -nzv_cols]
 ### Unique Values, Value Counts, and Membership
 
 #### Compute value frequencies
+```python
+# Python
+
+```
+
 ```R
+# R
+
 ```
 
 
@@ -308,13 +390,22 @@ if(length(nzv_cols) > 0) GermanCredit <- GermanCredit[, -nzv_cols]
 
 Standardizes the specified columns of a matrix or data frame to a mean of 0 and a standard deviation of 1
 
+```python
+# Python
+
+```
+
 ```R
+# R
+
 newdata <- scale(mydata)
 z <- scale(df[,2:4])
 ```
 
 
 ```R
+# R
+
 newdata <- scale(mydata)*SD + M
 newdata <- transform(mydata, myvar = scale(myvar)*10+50)
 ```
@@ -343,8 +434,14 @@ Joins
 <hr>
 
 #### vector -> column
+```python
+# Python
+
+```
 
 ```R
+# R
+
 cbind(sort(test_adj))
 ```
 
@@ -357,7 +454,14 @@ Gather the non-variable columns into a two-column key-value pair.
 
 Making wide dataset long.
 
+```python
+# Python
+
+```
+
 ```R
+# R
+
 #> # A tibble: 18 x 11
 #>                   religion `<$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k`
 #>                      <chr>   <int>     <int>     <int>     <int>     <int>
@@ -373,12 +477,16 @@ Define key-value columns.
 * to gather: all expect religion
 
 ```R
+# R
+
 pew %>% gather(income, frequency, -religion)
 ```
 
 with 
 
 ```R
+# R
+
 #> # A tibble: 180 x 3
 #>                   religion income frequency
 #>                      <chr>  <chr>     <int>
@@ -397,8 +505,14 @@ gather(week, rank, wk1:wk76, na.rm = TRUE)
 ### 1 column -> 1 column
 
 #### mutate  - revalue
+```python
+# Python
+
+```
 
 ```R
+# R
+
 data = data %>%
   mutate(CalculatedProgressStage_new = revalue(CalculatedProgressStage,
                                    c("APPROACH" = "aufgehts",
@@ -411,8 +525,14 @@ data = data %>%
 <hr>
 
 #### if-else
+```python
+# Python
+
+```
 
 ```R
+# R
+
 outcome <- ifelse (score > 0.5, "Passed", "Failed")
 ```
 
@@ -420,8 +540,14 @@ outcome <- ifelse (score > 0.5, "Passed", "Failed")
 <hr>    
 
 ##### Grep string -> new column
+```python
+# Python
+
+```
 
 ```R
+# R
+
 extractTitle <- function(name){
 	name <- as.character(name)
 	if(length(grep(“Miss”, name)) > 0){
@@ -439,6 +565,8 @@ extractTitle <- function(name){
 and apply it
 
 ```R
+# R
+
 titles <- NULL
 for (i in 1:nrow(df)){
 	titles <- c(titles, extractTitle(df[i,”name”]))
@@ -449,6 +577,8 @@ df$title <- as.factor(titles)
 titanic-example
 
 ```R
+# R
+
 ifelse(grepl('Mr ', titanicDF$Name), 'Mr', ifelse(grepl('Mrs ', titanicDF$Name), 'Miss', 'Nothing'))
 ```
 
@@ -459,7 +589,14 @@ ifelse(grepl('Mr ', titanicDF$Name), 'Mr', ifelse(grepl('Mrs ', titanicDF$Name),
 
 
 ##### Continuous into categories
+```python
+# Python
+
+```
+
 ```R
+# R
+
 leadership <- within(leadership,{
                      agecat <- NA
                      agecat[age > 75]              <- "Elder"
@@ -468,6 +605,8 @@ leadership <- within(leadership,{
 ```
 
 ```R
+# R
+
 df$col[]
 ```
 
@@ -475,13 +614,21 @@ df$col[]
 <hr>    
 
 ### 1 column -> x columns
+```python
+# Python
+
+```
 
 ```R
+# R
+
 tidy <- tidier %>%
   separate(key, into = c("location", "time"), sep = "\\.") 
 ```
 
 ```R
+# R
+
 tidy %>% head(8)
 #>   id       trt location time    time
 #> 1  1 treatment     work   T1 0.08514
@@ -500,14 +647,24 @@ tidy %>% head(8)
 
 
 ### x columns -> 1 column
+```python
+# Python
+
+```
 
 ```R
+# R
+
 ```
 
 (<a href="#top">Back to top</a>)
 <hr>
 
 ### x columns -> y columns
+```python
+# Python
+
+```
 
 ```R
 billboard3 <- billboard2 %>%
@@ -520,6 +677,8 @@ billboard3 <- billboard2 %>%
 for many columns
 
 ```R
+# R
+
 #convert numbers to numeric data
 spine[,1:12]=data.matrix(spine[,1:12])
 ```
@@ -531,15 +690,28 @@ spine[,1:12]=data.matrix(spine[,1:12])
 ### Formats
 
 #### Check correct
+```python
+# Python
+
+```
+
 ```R
+# R
+
 is.numeric(df$target)
 is.factor(df$target)
 is.character(df$target)
 ```
 
 #### Character types
+```python
+# Python
+
+```
 
 ```R
+# R
+
 mydata$x <- as.factor(mydata$x)     # character to factor 
 mydata$x <- as.character(mydata$x)  # factor to character
 extract_numeric(week)
@@ -560,6 +732,7 @@ as.Date(date.entered)
 
 ```R
 # R
+
 df$target <- factor(df$target2, labels = c("won", "lost"))
 ```
 explained [here](http://www.ats.ucla.edu/stat/r/modules/factor_variables.htm)
@@ -568,6 +741,7 @@ explained [here](http://www.ats.ucla.edu/stat/r/modules/factor_variables.htm)
 
 ```python
 # Python
+
 # 1. determine all values
 Categories = list(enumerate(sorted(np.unique(data_frame['Category']))))
 # 2. set up dictionaries
@@ -581,6 +755,8 @@ data_frame.Category = data_frame.Category.map(lambda x: CategoriesDict[x]).astyp
 #### Rounding off location coordinates to 2 decimal points
 
 ```python
+# Python
+
 data_frame.X = data_frame.X.map(lambda x: "%.2f" % round(x, 2)).astype(float)
 or
 format = lambda x: '%.2f' % x
@@ -589,6 +765,7 @@ frame.applymap(format)
 
 ```R
 # R
+
 # Convert all logical columns to numeric
 cols <- sapply(dat, is.logical)
 dat[,cols] <- lapply(dat[,cols], as.numeric)
@@ -602,10 +779,11 @@ as.character
 (<a href="#top">Back to top</a>)
 <hr>
 
-#### Dates 
+### Dates 
 
 ```python
 # Python
+
 date_time = pd.to_datetime(df.Dates)
 year = date_time.dt.year
 data['Year'] = year
@@ -622,6 +800,7 @@ data['Time'] = time
 
 ```R
 # R
+
 mydates <- as.Date(c("2007-06-22", "2004-02-13"))
 #
 strDates <- c("01/05/1965", "08/16/1975")
@@ -632,6 +811,7 @@ R stores dates internally, they’re represented as the number of days since Jan
 ##### as weekday
 ```python
 # Python
+
 DayOfWeeks = df.DayOfWeek.unique()
     DayOfWeekMap = {}
     i = 0
@@ -643,6 +823,7 @@ DayOfWeeks = df.DayOfWeek.unique()
 
 ```R
 # R
+
 weekdays(as.Date('16-08-2012','%d-%m-%Y'))
 ```
 
@@ -650,6 +831,7 @@ weekdays(as.Date('16-08-2012','%d-%m-%Y'))
 
 ```R
 # R
+
 data$day = factor(NA,levels=c('workweek','weekend'))
 data$day[day >= 0 & day < 5] <- 'workweek'
 data$day[day >= 5] <- 'weekend'
@@ -659,6 +841,7 @@ data$day[day >= 5] <- 'weekend'
 
 ```R
 # R
+
 today <- Sys.Date()
 dob   <- as.Date("1956-10-12")
 difftime(today, dob, units="weeks")
@@ -680,6 +863,7 @@ difftime(today, dob, units="weeks")
 
 ```python
 # Python
+
 df.fillna({1: 0.5, 3: -1})
 data.replace([-999, -1000], [np.nan, 0]) # 999 -> np.nan, -1000 -> 0
 df.fillna(0, inplace=True) # np.nan -> 0s = df['col'].fillna(0)          # np.nan -> 0df = df.replace(r'\s+', np.nan,regex=True) # white space -> np.nan
@@ -689,6 +873,7 @@ df.fillna(0, inplace=True) # np.nan -> 0s = df['col'].fillna(0)          # np.n
 
 ```python
 # Python
+
 df['column'].fillna(df['column'].mean(), inplace=True)
 # mean by other column category
 df['column'].fillna(df.groupby('column2')['column'].transform("mean"), inplace=True) 
@@ -703,6 +888,7 @@ def compute_mean(data_frame, column):
 
 ```R
 # R
+
 for(i in 1:ncol(df)){
     cat("checking col: ",str(i),df[names())
     df[is.na(df[,i]), i] <- mean(df[,i], na.rm = TRUE)
@@ -724,6 +910,7 @@ for (x in attr.data.types$character){
  create shadow matrix
 
 ```R
+
 x <- as.data.frame(abs(is.na(sleep)))
 y <- x[which(sd(x) > 0)]# extracts the variables that have some (but not all) missing values, andcor(y)
 ```
@@ -736,6 +923,7 @@ gives you correlations among indicator variables. of missing values.
 
 ```R
 # R
+
 ## impute missing values with linear regression
 imput_age <- lm(age~., data = full_imp)
 summary(imput_age)
@@ -750,6 +938,7 @@ full_imp[is.na(full_imp[, age]), age := .(imp_age)]
 ### recoding missing values
 
 ```R
+
 leadership$age[leadership$age == 99] <- NA
 ```
 
@@ -759,6 +948,7 @@ leadership$age[leadership$age == 99] <- NA
 #### removing rows with 'na' values using na.omit
 
 ```R
+
 newdata <- na.omit(df)
 ```
 ![{{base}}/images/lambda_architecture.png]({{base}}/images/datascience/R_na_omit.jpg)
@@ -775,6 +965,7 @@ newdata <- na.omit(df)
 
 ```python
 # Python
+
 date_time = pd.to_datetime(df.Dates)
 year = date_time.dt.year
 data['Year'] = year
@@ -794,6 +985,8 @@ data['Time'] = time
 
 #### Binning Data
 ```python
+# Python
+
 bins = [0, 25, 50, 75, 100]   ## define bin ranges
 group_names = ['Low', 'Okay', 'Good', 'Great']
 
@@ -807,6 +1000,7 @@ cats = pd.cut(ages, bins)
 
 ```R
 # R
+
 dat <- read.table("clipboard", header=TRUE)
 
 cuts <- apply(dat, 2, cut, c(-Inf,seq(0.5, 1, 0.1), Inf), labels=0:6)
@@ -825,6 +1019,8 @@ cuts <- as.data.frame(cuts)
 
 
 ```R
+# R
+
 x<-rnorm(1000, mean=0, sd=50)
 summary(x)
 Min. 1st Qu. Median Mean 3rd Qu. Max.
@@ -846,12 +1042,14 @@ summary(binned)
 
 ```python
 # Python
+
 dummies = pd.get_dummies(df['key'], prefix='key')
 df_with_dummy = df[['data1']].join(dummies)
 ```
 
 ```R
 # R
+
 dummy <- dummyVars("~.", data=df, fullRank=F)
 df <- as.data.frame(predict(dummy, df))
 ```
@@ -865,6 +1063,7 @@ df <- as.data.frame(predict(dummy, df))
 
 ### Remove columns with standard deviation of zero
 ```R
+
 all_sd_zero <- sapply(df, function(x) { sd(x) == 0})
 # use sd(data$var, na.rm=TRUE) to ignore NA values
 df <- df[!all_sd_zero]
@@ -876,6 +1075,7 @@ df <- df[!all_sd_zero]
 ### List of useful cleaning operations
 
 ```R
+
 # only unique
 (ids   <- which(sapply(ds, function(x) length(unique(x))) == nrow(ds)))
 ignore <- union(ignore, names(ids))
@@ -904,11 +1104,13 @@ ignore     <- union(ignore, constants)
 ## Group by  + mean
 ```python
 # Python
+
 means = df['data1'].groupby([df['key1'], df['key2']]).mean()
 ```
 
 ```R
 # R
+
 ```
 
 (<a href="#top">Back to top</a>)
@@ -919,6 +1121,7 @@ means = df['data1'].groupby([df['key1'], df['key2']]).mean()
 ## univariate selection
 ```R
 # R
+
 ```
 
 [source](http://blog.datadive.net/selecting-good-features-part-i-univariate-selection/)
@@ -930,6 +1133,8 @@ means = df['data1'].groupby([df['key1'], df['key2']]).mean()
 
 ### fscaret - ensemble-based feature selection
 ```R
+# R
+
 splitIndex <- createDataPartition(df$target, p = .75, list = FALSE, times = 1)
 trainDF <- df[splitIndex,]
 testDF <- df[-splitIndex,]
@@ -951,6 +1156,8 @@ myFP$PPlabels
 
 ## Split training/test data
 ```R
+# R
+
 Train <- createDataPartition(GermanCredit$Class, p=0.6, list=FALSE)
 training <- GermanCredit[ Train, ]
 testing <- GermanCredit[ -Train, ]
@@ -959,6 +1166,8 @@ testing <- GermanCredit[ -Train, ]
 alternatively
 
 ```R
+# R
+
 train_ind = sample(1:n, size = round(0.8*n), replace=FALSE)
 #
 train = spine_red[train_ind,]
@@ -972,6 +1181,8 @@ test = spine_red[-train_ind,]
 
 ## assign quantiles to student scores
 ```R
+# R
+
 z <- scale(roster[,2:4])
 z
         Math Science English
@@ -984,6 +1195,8 @@ z
 Get a performance score for each student by calculating the row means using the mean() function and adding it to the roster using the cbind() function
 
 ```R
+# R
+
 score <- apply(z, 1, mean)
 roster <- cbind(roster, score)
 roster
@@ -995,6 +1208,8 @@ roster
 ```
 
 ```R
+# R
+
 y <- quantile(roster$score, c(.8,.6,.4,.2))
 y
   80%   60%   40%   20%
@@ -1004,6 +1219,8 @@ y
 Recode percentile ranks
 
 ```R
+# R
+
 roster$grade[score >= y[1]] <- "A"
 roster$grade[score < y[1] & score >= y[2]] <- "B"
 roster$grade[score < y[2] & score >= y[3]] <- "C"
