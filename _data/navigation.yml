@@ -49,8 +49,8 @@ new_side:
         url:  /programming/R-cheat-sheet/
       - title: "Python"
         url: /programming/python-cheat-sheet/ 
-      - title: "Pandas (Python)"
-        url: /programming/pandas-cheat-sheet/ 
+      - title: "Scala"
+        url: /programming/Scala-cheat-sheet/ 
 
 
   - title: Best practice guides

@@ -7,6 +7,19 @@ sidebar:
   nav: "new_side"
 ---
 
+<table>
+<tr>
+<th>
+```R just a test
+```</th>
+</tr>
+<tr>
+<td></td>
+</tr>
+</table>
+
+
+
 # Table of contents
 
 * TOC
@@ -157,6 +170,7 @@ ggplot(df) + geom_density(aes(x=UserInvolvement_RecencyScore)) +
 
 ### Variable roles
 ```R
+# R
 target <- "rain_tomorrow"risk   <- "risk_mm"id     <- c("date", "location")
 
 predictorNames <- setdiff(names(traindf), outcomeName)
@@ -178,6 +192,12 @@ unique(df['glob_IsWon'])
 
 (<a href="#top">Back to top</a>)
 <hr>
+
+### Missing values
+```python
+# Python
+df.apply(lambda x: sum(x.isnull()),axis=0) 
+```
 
 ### Sum, Describe
 
@@ -526,28 +546,6 @@ extract_numeric(week)
 as.Date(date.entered)
 ```
 
-#### Convert to ...
-
-#### Factor
-
-```R
-df$target <- factor(df$target2, labels = c("won", "lost"))
-```
-
-explained [here](http://www.ats.ucla.edu/stat/r/modules/factor_variables.htm)
-
-#### Numeric, logical, character
-```python
-# Python
-df.fillna({1: 0.5, 3: -1})
-data.replace([-999, -1000], [np.nan, 0]) # 999 -> np.nan, -1000 -> 0
-df.fillna(0, inplace=True) # np.nan -> 0s = df['col'].fillna(0)          # np.nan -> 0df = df.replace(r'\s+', np.nan,regex=True) # white space -> np.nan```
-
-(<a href="#top">Back to top</a>)
-<hr>
-
-
-## Hierarchical Indexing
 
 
 # Data Wrangling: Clean, Transform, Merge, Reshape
@@ -557,6 +555,14 @@ df.fillna(0, inplace=True) # np.nan -> 0s = df['col'].fillna(0)          # np.n
 ## Reshaping and Pivoting
 
 ## Data Transformation
+
+#### Factor
+
+```R
+# R
+df$target <- factor(df$target2, labels = c("won", "lost"))
+```
+explained [here](http://www.ats.ucla.edu/stat/r/modules/factor_variables.htm)
 
 ### Strings
 
@@ -696,7 +702,7 @@ def compute_mean(data_frame, column):
 ```
 
 ```R
-R
+# R
 for(i in 1:ncol(df)){
     cat("checking col: ",str(i),df[names())
     df[is.na(df[,i]), i] <- mean(df[,i], na.rm = TRUE)
@@ -729,6 +735,7 @@ gives you correlations among indicator variables. of missing values.
 ##### applying linear regression
 
 ```R
+# R
 ## impute missing values with linear regression
 imput_age <- lm(age~., data = full_imp)
 summary(imput_age)
