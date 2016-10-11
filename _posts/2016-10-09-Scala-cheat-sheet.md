@@ -838,6 +838,7 @@ def something(x: Int, y: Int) = Try(x/y).getOrElse(0)
 # Advances
 
 ## Actors
+Actors are the core elements that make Scala scalable. Actors act as coroutines, managing the underlying threads pool. Actors communicate through passing asynchronous messages.
 [link](http://www.scala-lang.org/old/node/242)
 
 

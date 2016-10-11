@@ -337,3 +337,17 @@ hadoop job -list
 #job history
 :8443/gateway/jobhistoryui/history
 ```
+
+
+
+# docker
+repository: https://github.com/f-stibane/hdp-cluster-docker
+
+# changes to make
+
+```sh
+docker-compose up
+localhost:8080
+
+setup-cluster.py
+```

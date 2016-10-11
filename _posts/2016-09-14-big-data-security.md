@@ -244,6 +244,11 @@ consists of two services:
 2. Authorization
 
 Overview picture!
+![{{base}}/images/lambda_architecture.png]({{base}}/images/bigdata/kerberos_realm.jpg)
+
+[image source](https://docs.oracle.com/cd/E37670_01/E41138/html/images/Kerberos.png)
+
+
 
 (<a href="#top">Back to top</a>)
 <hr>

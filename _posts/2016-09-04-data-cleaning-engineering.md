@@ -13,7 +13,7 @@ sidebar:
 {:toc}
 
 
-# Getting Started with R
+# Getting Started
 
 (<a href="#top">Back to top</a>)
 <hr>
@@ -528,6 +528,7 @@ data = data %>%
 ```python
 # Python
 
+df['color'] = np.where(df['Set']=='Z', 'green', 'red')
 ```
 
 ```R

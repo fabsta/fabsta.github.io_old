@@ -19,6 +19,8 @@ new_side:
         url: /datascience/data-science-questions-and-answers/
       - title: "Data cleaning & engineering (P/R)"
         url: /programming/data-cleaning-engineering/
+      - title: "Python Pandas"
+        url: /programming/pandas-cheat-sheet/
       - title: "Machine learning (P/R)"
         url: /programming/machine-learning/ 
       - title: "Plotting (P)"
@@ -51,6 +53,8 @@ new_side:
         url: /programming/python-cheat-sheet/ 
       - title: "Scala"
         url: /programming/Scala-cheat-sheet/ 
+      - title: "Java"
+        url: /programming/Java-cheat-sheet/ 
 
 
   - title: Best practice guides
