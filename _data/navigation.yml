@@ -27,6 +27,8 @@ new_side:
         url: /programming/python-plotting-cheat-sheet/
       - title: "Use cases"
         url: /datascience/predictive-analytics-overview-of-use-cases/
+      - title: "Statistics"
+        url: /datascience/statistics/
 
   - title: Big Data
     children:
